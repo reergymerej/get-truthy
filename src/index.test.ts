@@ -1,3 +1,25 @@
+import { getLeft, getRight } from './'
+
+type Operator = '>'
+  | '<'
+  | '>='
+  | '<='
+  | '=='
+  | '==='
+  | '!='
+  | '!=='
+  | '+'
+  | '-'
+  | '*'
+  // "/" | "%" |
+  // | "**" | "&" | "|" | ">>" | ">>>" | "<<" | "^"
+  // | "in" | "instanceof"
+
+enum SideLabel {
+  left,
+  right,
+}
+
 // Return value safe for eval.
 const safe = (value: any) => {
   const type = typeof value
@@ -13,107 +35,6 @@ const safe = (value: any) => {
   }
 }
 
-const getGreaterOrLessThan = (change: number) => (basis: any): any => {
-  const type = typeof basis
-  switch(type) {
-    case 'number':
-      return basis + change
-    case 'string': {
-      if (!basis) {
-        if (change < 0) {
-          throw new Error(`Nothing can be less than an empty string.`)
-        }
-        return 'any string'
-      }
-      const codePoint = (basis || 'A').codePointAt(0)
-      const nextString = String.fromCodePoint(codePoint + change)
-      const result = nextString + basis.substring(1)
-      return result
-    }
-    default:
-      throw new Error(`unhandled case "${type}"`)
-  }
-}
-
-const getGreaterThan = getGreaterOrLessThan(1)
-const getLessThan = getGreaterOrLessThan(-1)
-
-const getAddition = (basis: any): any => {
-  const type = typeof basis
-  switch(type) {
-    case 'number':
-      return 1 - basis
-    case 'string':
-      return 'any string'
-    default:
-      throw new Error(`unhandled case "${type}"`)
-  }
-}
-
-const getSubtraction = (basis: any): any => {
-  const type = typeof basis
-  switch(type) {
-    case 'number':
-      return 1 - basis
-    case 'string': {
-      throw new Error(`Subtracting any string leads to NaN`)
-    }
-    default:
-      throw new Error(`unhandled case "${type}"`)
-  }
-}
-
-const getLeft = (operator: string, basis: any): any => {
-  switch(operator) {
-    case '>':
-    case '>=':
-      return getGreaterThan(basis)
-    case '<':
-    case '<=':
-      return getLessThan(basis)
-    case '==':
-    case '===':
-      return basis
-    case '!=':
-    case '!==':
-      return !basis
-    case '+':
-      return getAddition(basis)
-    case '-':
-      return getSubtraction(basis)
-    default:
-      throw new Error(`unhandled case "${operator}"`)
-  }
-}
-
-const getRight = (operator: string, basis: any): any => {
-  switch(operator) {
-    case '>':
-    case '>=':
-      return getLessThan(basis)
-    case '<':
-    case '<=':
-      return getGreaterThan(basis)
-    case '==':
-    case '===':
-    case '!=':
-    case '!==':
-    case '+':
-    case '-':
-      return getLeft(operator, basis)
-    //   return !basis
-    //   return getAddition(basis)
-    //   return getSubtraction(basis)
-    default:
-      throw new Error(`unhandled case "${operator}"`)
-  }
-}
-
-enum SideLabel {
-  left,
-  right,
-}
-
 const getEvalString = (label: SideLabel, fn: Function, operator: string, basis: any): string => {
   const value = fn(operator, basis)
   const safeValue = safe(value)
@@ -122,19 +43,6 @@ const getEvalString = (label: SideLabel, fn: Function, operator: string, basis: 
     ? `${safeValue} ${operator} ${safeBasis}`
     : `${safeBasis} ${operator} ${safeValue}`
 }
-
-type Operator = '>'
-  | '<'
-  | '>='
-  | '<='
-  | '=='
-  | '==='
-  | '!='
-  | '!=='
-  | '+'
-  | '-'
-  // "/" | "%" | "*" | "**" | "&" | "|" | ">>" | ">>>" | "<<" | "^"
-  // | "in" | "instanceof"
 
 describe.each([
   ['get left', SideLabel.left, getLeft],
