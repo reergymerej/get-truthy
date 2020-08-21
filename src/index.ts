@@ -48,7 +48,39 @@ const getSubtraction = (basis: any): any => {
   }
 }
 
-export const getLeft = (operator: string, basis: any): any => {
+const getMultiplication = (basis: any): any => {
+  const type = typeof basis
+  switch(type) {
+    case 'number':
+      if (basis === 0) {
+        throw new Error('Anything multiplied by 0 is falsy.')
+      }
+      return basis
+    case 'string': {
+      throw new Error(`Multiplying any string leads to NaN`)
+    }
+    default:
+      throw new Error(`unhandled case "${type}"`)
+  }
+}
+
+export type Operator = '>'
+  | '<'
+  | '>='
+  | '<='
+  | '=='
+  | '==='
+  | '!='
+  | '!=='
+  | '+'
+  | '-'
+  | '*'
+  // "/" | "%" |
+  // | "**" | "&" | "|" | ">>" | ">>>" | "<<" | "^"
+  // | "in" | "instanceof"
+
+
+export const getLeft = (operator: Operator, basis: any): any => {
   switch(operator) {
     case '>':
     case '>=':
@@ -66,12 +98,14 @@ export const getLeft = (operator: string, basis: any): any => {
       return getAddition(basis)
     case '-':
       return getSubtraction(basis)
+    case '*':
+      return getMultiplication(basis)
     default:
       throw new Error(`unhandled case "${operator}"`)
   }
 }
 
-export const getRight = (operator: string, basis: any): any => {
+export const getRight = (operator: Operator, basis: any): any => {
   switch(operator) {
     case '>':
     case '>=':

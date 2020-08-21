@@ -1,19 +1,4 @@
-import { getLeft, getRight } from './'
-
-type Operator = '>'
-  | '<'
-  | '>='
-  | '<='
-  | '=='
-  | '==='
-  | '!='
-  | '!=='
-  | '+'
-  | '-'
-  | '*'
-  // "/" | "%" |
-  // | "**" | "&" | "|" | ">>" | ">>>" | "<<" | "^"
-  // | "in" | "instanceof"
+import { getLeft, getRight, Operator } from './'
 
 enum SideLabel {
   left,
@@ -59,9 +44,9 @@ describe.each([
     '===',
     '>',
     '>=',
+    '*',
   ] as Operator[])
   ('%s', (operator: Operator) => {
-
     type ItOption = [
       any, // basis
       Operator[], // throws when finding left
@@ -72,10 +57,10 @@ describe.each([
       [-100, [], []],
       [100, [], []],
       [-1, [], []],
-      [0, [], []],
+      [0, ['*'], ['*']],
       [1, [], []],
-      ['foo', ['-'], ['-']],
-      ['', ['-', '<', '<='], ['-', '>', '>=']],
+      ['foo', ['-', '*'], ['-', '*']],
+      ['', ['-', '<', '<=', '*'], ['-', '>', '>=', '*']],
     ] as ItOption[])
     ('%s', (basis, impossibleLeft, impossibleRight) => {
 
