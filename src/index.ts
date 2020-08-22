@@ -8,7 +8,7 @@ const getGreaterOrLessThan = (change: number) => (basis: any): any => {
     case 'string': {
       if (!basis) {
         if (change < 0) {
-          throw new Error(`Nothing can be less than an empty string.`)
+          throw new Error(error(`Nothing can be less than an empty string.`))
         }
         return 'any string'
       }
