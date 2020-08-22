@@ -1,3 +1,5 @@
+const error = (message: string): string => `Impossible: ${message}`
+
 const getGreaterOrLessThan = (change: number) => (basis: any): any => {
   const type = typeof basis
   switch(type) {
@@ -40,9 +42,8 @@ const getSubtraction = (basis: any): any => {
   switch(type) {
     case 'number':
       return 1 - basis
-    case 'string': {
-      throw new Error(`Subtracting any string leads to NaN`)
-    }
+    case 'string':
+      throw new Error(error(`Subtracting any string leads to NaN`))
     default:
       throw new Error(`unhandled case "${type}"`)
   }
@@ -53,12 +54,41 @@ const getMultiplication = (basis: any): any => {
   switch(type) {
     case 'number':
       if (basis === 0) {
-        throw new Error('Anything multiplied by 0 is falsy.')
+        throw new Error(error('Anything multiplied by 0 is falsy.'))
       }
       return basis
     case 'string': {
-      throw new Error(`Multiplying any string leads to NaN`)
+      throw new Error(error(`Multiplying any string leads to NaN`))
     }
+    default:
+      throw new Error(`unhandled case "${type}"`)
+  }
+}
+
+export enum SideLabel {
+  left,
+  right,
+}
+
+const getDivision = (side: SideLabel, basis: any): any => {
+  const type = typeof basis
+  // TODO: refactor
+  switch(type) {
+    case 'number':
+      if (side === SideLabel.left) {
+        if (basis === 0) {
+          // anything / 0 == Infinity (truthy)
+          return 1
+        }
+        return basis
+      } else {
+        if (basis === 0) {
+          throw new Error(error('0 divided by anything is NaN.'))
+        }
+        return basis
+      }
+    case 'string':
+      throw new Error(error(`Any string division is NaN.`))
     default:
       throw new Error(`unhandled case "${type}"`)
   }
@@ -75,7 +105,8 @@ export type Operator = '>'
   | '+'
   | '-'
   | '*'
-  // "/" | "%" |
+  | '/'
+  //| "%" |
   // | "**" | "&" | "|" | ">>" | ">>>" | "<<" | "^"
   // | "in" | "instanceof"
 
@@ -100,6 +131,8 @@ export const getLeft = (operator: Operator, basis: any): any => {
       return getSubtraction(basis)
     case '*':
       return getMultiplication(basis)
+    case '/':
+      return getDivision(SideLabel.left, basis)
     default:
       throw new Error(`unhandled case "${operator}"`)
   }
@@ -113,6 +146,8 @@ export const getRight = (operator: Operator, basis: any): any => {
     case '<':
     case '<=':
       return getGreaterThan(basis)
+    case '/':
+      return getDivision(SideLabel.right, basis)
     default:
       return getLeft(operator, basis)
   }

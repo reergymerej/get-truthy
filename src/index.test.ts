@@ -1,9 +1,5 @@
-import { getLeft, getRight, Operator } from './'
+import { getLeft, getRight, Operator, SideLabel } from './'
 
-enum SideLabel {
-  left,
-  right,
-}
 
 // Return value safe for eval.
 const safe = (value: any) => {
@@ -45,6 +41,7 @@ describe.each([
     '>',
     '>=',
     '*',
+    '/',
   ] as Operator[])
   ('%s', (operator: Operator) => {
     type ItOption = [
@@ -57,10 +54,10 @@ describe.each([
       [-100, [], []],
       [100, [], []],
       [-1, [], []],
-      [0, ['*'], ['*']],
+      [0, ['*'], ['*', '/']],
       [1, [], []],
-      ['foo', ['-', '*'], ['-', '*']],
-      ['', ['-', '<', '<=', '*'], ['-', '>', '>=', '*']],
+      ['foo', ['-', '*', '/'], ['-', '*', '/']],
+      // ['', ['-', '<', '<=', '*'], ['-', '>', '>=', '*']],
     ] as ItOption[])
     ('%s', (basis, impossibleLeft, impossibleRight) => {
 
@@ -72,7 +69,7 @@ describe.each([
       if (shouldThrow) {
         expect(() => {
           fn(operator, basis)
-        }).toThrow()
+        }).toThrow(/^Impossible/)
       } else {
         const evalString = getEvalString(label, fn, operator, basis)
         // console.log(evalString)

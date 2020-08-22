@@ -1,6 +1,6 @@
 # get-truthy
 
-Show me an operator and a value, I'll show you another value to make it truthy.
+Show me a **binary operator** and a value, I'll show you another value to make it truthy.
 
 ## Usage
 
