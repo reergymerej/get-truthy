@@ -1,4 +1,4 @@
-import { getLeft, getRight, Operator, SideLabel } from './'
+import { left, right, Operator, SideLabel } from './'
 
 
 // Return value safe for eval.
@@ -10,6 +10,8 @@ const safe = (value: any) => {
     case 'string':
       return `"${value}"`
     case 'boolean':
+      return value
+    case 'undefined':
       return value
     default:
       throw new Error(`unhandled case "${type}"`)
@@ -26,8 +28,8 @@ const getEvalString = (label: SideLabel, fn: Function, operator: string, basis: 
 }
 
 describe.each([
-  ['get left', SideLabel.left, getLeft],
-  ['get right', SideLabel.right, getRight],
+  ['get left', SideLabel.left, left],
+  ['get right', SideLabel.right, right],
 ])('%s', (_labelName, label, fn) => {
   describe.each([
     '!=',
@@ -42,6 +44,7 @@ describe.each([
     '>=',
     '*',
     '/',
+    '%',
   ] as Operator[])
   ('%s', (operator: Operator) => {
     type ItOption = [
@@ -54,10 +57,19 @@ describe.each([
       [-100, [], []],
       [100, [], []],
       [-1, [], []],
-      [0, ['*'], ['*', '/']],
       [1, [], []],
-      ['foo', ['-', '*', '/'], ['-', '*', '/']],
-      ['', ['-', '<', '<=', '*', '/'], ['-', '>', '>=', '*', '/']],
+      [0, ['*', '%'], ['*', '/', '%']],
+      [1, [], []],
+      ['foo',
+        ['-', '*', '/', '%'],
+        ['-', '*', '/', '%'],
+      ],
+      // TODO: Consider enumerating these for quick reference.
+      ['',
+        ['-', '<', '<=', '*', '/', '%'],
+        ['-', '>', '>=', '*', '/', '%'],
+      ],
+      // ['3', [], []],
     ] as ItOption[])
     ('%s', (basis, impossibleLeft, impossibleRight) => {
 

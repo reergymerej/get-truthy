@@ -4,11 +4,20 @@ Show me a **binary operator** and a value, I'll show you another value to make i
 
 ## Usage
 
-```sh
+```js
 import getTruthy from 'get-truthy'
 
-getTruthy('>', 9)
+// ? > 9 == true
+getTruthy.left('>', 9)
 // 10
+
+// 9 > ? == true
+getTruthy.right('>', 9)
+// 8
+
+// '' > ? == true
+getTruthy.right('>', 9)
+// throws Impossible: Nothing can be less than an empty string.
 ```
 
 

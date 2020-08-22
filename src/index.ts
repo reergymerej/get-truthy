@@ -94,6 +94,40 @@ const getDivision = (side: SideLabel, basis: any): any => {
   }
 }
 
+const getModulo = (side: SideLabel, basis: any): any => {
+  const type = typeof basis
+  if (side === SideLabel.left) {
+    switch(type) {
+      case 'number':
+        if (basis === 0) {
+          throw new Error(error('Any number % 0 is NaN.'))
+        }
+        return basis * 0.5
+      case 'string':
+        throw new Error(error('Anything % this string is NaN.'))
+      default:
+        throw new Error(`unhandled case "${type}"`)
+    }
+  } else {
+    switch(type) {
+      case 'number':
+        if (basis === 0) {
+          throw new Error(error('0 % any number is 0.'))
+        }
+        return basis * 2 || 1
+      case 'string':
+          throw new Error(error(
+            (basis
+              ? 'Any non-empty string % is NaN.'
+              : 'Any empty string % is 0.'
+            ) + '\nhttps://www.destroyallsoftware.com/talks/wat'
+          ))
+      default:
+        throw new Error(`unhandled case "${type}"`)
+    }
+  }
+}
+
 export type Operator = '>'
   | '<'
   | '>='
@@ -106,12 +140,12 @@ export type Operator = '>'
   | '-'
   | '*'
   | '/'
-  //| "%" |
+  | '%'
   // | "**" | "&" | "|" | ">>" | ">>>" | "<<" | "^"
   // | "in" | "instanceof"
 
 
-export const getLeft = (operator: Operator, basis: any): any => {
+export const left = (operator: Operator, basis: any): any => {
   switch(operator) {
     case '>':
     case '>=':
@@ -133,12 +167,14 @@ export const getLeft = (operator: Operator, basis: any): any => {
       return getMultiplication(basis)
     case '/':
       return getDivision(SideLabel.left, basis)
+    case '%':
+      return getModulo(SideLabel.left, basis)
     default:
       throw new Error(`unhandled case "${operator}"`)
   }
 }
 
-export const getRight = (operator: Operator, basis: any): any => {
+export const right = (operator: Operator, basis: any): any => {
   switch(operator) {
     case '>':
     case '>=':
@@ -148,7 +184,9 @@ export const getRight = (operator: Operator, basis: any): any => {
       return getGreaterThan(basis)
     case '/':
       return getDivision(SideLabel.right, basis)
+    case '%':
+      return getModulo(SideLabel.right, basis)
     default:
-      return getLeft(operator, basis)
+      return left(operator, basis)
   }
 }
