@@ -79,7 +79,8 @@ const getAddition = (basis: any): any => {
 }
 
 const getSubtraction = (side: SideLabel, basis: any): any => {
-  const type = typeof basis
+  const parsed = parseFloat(basis)
+  const type = typeof parsed
   switch(type) {
     case 'number':
       return 1 - basis
@@ -91,7 +92,8 @@ const getSubtraction = (side: SideLabel, basis: any): any => {
 }
 
 const getMultiplication = (side: SideLabel, basis: any): any => {
-  const type = typeof basis
+  const parsed = parseFloat(basis)
+  const type = typeof parsed
   switch(type) {
     case 'number':
       if (basis === 0) {
@@ -124,7 +126,8 @@ const getDivisionRightStringError = (basis: any): TruthyError => basis
   : TruthyError.DivisionRightEmptyString
 
 const getDivision = (side: SideLabel, basis: any): any => {
-  const type = typeof basis
+  const parsed = parseFloat(basis)
+  const type = typeof parsed
   // TODO: refactor
   switch(type) {
     case 'number':
@@ -152,7 +155,8 @@ const getDivision = (side: SideLabel, basis: any): any => {
 }
 
 const getModulo = (side: SideLabel, basis: any): any => {
-  const type = typeof basis
+  const parsed = parseFloat(basis)
+  const type = typeof parsed
   if (side === SideLabel.left) {
     switch(type) {
       case 'number':
