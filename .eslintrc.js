@@ -13,8 +13,8 @@ module.exports = {
   rules: {
     "@typescript-eslint/no-explicit-any": 0,
     "@typescript-eslint/explicit-module-boundary-types": 0,
-    complexity: [1, 5],
-    "max-statements": [1, 10],
-    "max-depth": [1, 3],
+    complexity: [2, 4],
+    "max-statements": [2, 9],
+    "max-depth": [2, 3],
   },
 }

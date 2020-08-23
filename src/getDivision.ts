@@ -22,28 +22,31 @@ const getNumber = (side: SideLabel, basis: any) => {
   }
 }
 
+const getString = (side: SideLabel, basis: any) => {
+  const parsed = parseFloat(basis)
+  if (isNaN(parsed)) {
+    throw new Error(
+      error(
+        side,
+        "/",
+        basis,
+        side === SideLabel.left
+          ? getDivisionLeftStringError(basis)
+          : getDivisionRightStringError(basis),
+      ),
+    )
+  }
+  return getDivision(side, parsed)
+}
+
 export const getDivision = (side: SideLabel, basis: any): any => {
   const type = typeof basis
+
   switch (type) {
     case "number":
       return getNumber(side, basis)
-
-    case "string": {
-      const parsed = parseFloat(basis)
-      if (isNaN(parsed)) {
-        throw new Error(
-          error(
-            side,
-            "/",
-            basis,
-            side === SideLabel.left
-              ? getDivisionLeftStringError(basis)
-              : getDivisionRightStringError(basis),
-          ),
-        )
-      }
-      return getDivision(side, parsed)
-    }
+    case "string":
+      return getString(side, basis)
     default:
       throw new Error(`unhandled case "${type}"`)
   }

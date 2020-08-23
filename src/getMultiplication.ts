@@ -8,27 +8,30 @@ const getNumber = (side: SideLabel, basis: any) => {
   return basis
 }
 
+const getString = (side: SideLabel, basis: any) => {
+  const parsed = parseFloat(basis)
+  if (isNaN(parsed)) {
+    throw new Error(
+      error(
+        side,
+        "*",
+        basis,
+        basis
+          ? TruthyError.MultiplyStringWord
+          : TruthyError.MultiplyEmptyString,
+      ),
+    )
+  }
+  return getMultiplication(side, parsed)
+}
+
 export const getMultiplication = (side: SideLabel, basis: any): any => {
   const type = typeof basis
   switch (type) {
     case "number":
       return getNumber(side, basis)
-    case "string": {
-      const parsed = parseFloat(basis)
-      if (isNaN(parsed)) {
-        throw new Error(
-          error(
-            side,
-            "*",
-            basis,
-            basis
-              ? TruthyError.MultiplyStringWord
-              : TruthyError.MultiplyEmptyString,
-          ),
-        )
-      }
-      return getMultiplication(side, parsed)
-    }
+    case "string":
+      return getString(side, basis)
     default:
       throw new Error(`unhandled case "${type}"`)
   }

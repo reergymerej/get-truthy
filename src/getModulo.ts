@@ -15,31 +15,50 @@ const getRightNumber = (side: SideLabel, basis: any) => {
   return basis * 2
 }
 
+const getLeftString = (side: SideLabel, basis: any) => {
+  const parsed = parseFloat(basis)
+  if (isNaN(parsed)) {
+    throw new Error(
+      error(
+        side,
+        "%",
+        basis,
+        basis
+          ? TruthyError.ModuloLeftStringWord
+          : TruthyError.ModuloLeftStringEmpty,
+      ),
+    )
+  }
+  return getModulo(side, parsed)
+}
+
 const getLeft = (side: SideLabel, basis: any) => {
   const type = typeof basis
   switch (type) {
     case "number":
       return getLeftNumber(side, basis)
-
-    case "string": {
-      const parsed = parseFloat(basis)
-      if (isNaN(parsed)) {
-        throw new Error(
-          error(
-            side,
-            "%",
-            basis,
-            basis
-              ? TruthyError.ModuloLeftStringWord
-              : TruthyError.ModuloLeftStringEmpty,
-          ),
-        )
-      }
-      return getModulo(side, parsed)
-    }
+    case "string":
+      return getLeftString(side, basis)
     default:
       throw new Error(`unhandled case "${type}"`)
   }
+}
+
+const getRightString = (side: SideLabel, basis: any) => {
+  const parsed = parseFloat(basis)
+  if (isNaN(parsed)) {
+    throw new Error(
+      error(
+        side,
+        "%",
+        basis,
+        basis
+          ? TruthyError.ModuloRightStringWord
+          : TruthyError.ModuloRightStringEmpty,
+      ) + "\nhttps://www.destroyallsoftware.com/talks/wat",
+    )
+  }
+  return getModulo(side, parsed)
 }
 
 const getRight = (side: SideLabel, basis: any) => {
@@ -47,22 +66,8 @@ const getRight = (side: SideLabel, basis: any) => {
   switch (type) {
     case "number":
       return getRightNumber(side, basis)
-    case "string": {
-      const parsed = parseFloat(basis)
-      if (isNaN(parsed)) {
-        throw new Error(
-          error(
-            side,
-            "%",
-            basis,
-            basis
-              ? TruthyError.ModuloRightStringWord
-              : TruthyError.ModuloRightStringEmpty,
-          ) + "\nhttps://www.destroyallsoftware.com/talks/wat",
-        )
-      }
-      return getModulo(side, parsed)
-    }
+    case "string":
+      return getRightString(side, basis)
     default:
       throw new Error(`unhandled case "${type}"`)
   }

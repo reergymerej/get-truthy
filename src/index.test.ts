@@ -104,6 +104,7 @@ type ItOption = [
 ]
 
 // Return value safe for eval.
+// eslint-disable-next-line complexity
 const safe = (value: any) => {
   const type = typeof value
   switch (type) {
