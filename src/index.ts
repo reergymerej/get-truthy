@@ -2,8 +2,8 @@
 // 0 / X = ? 0 divided by anything is NaN.
 // 'foo' / X = ? Any string division is NaN.
 export enum TruthyError {
-  DivisionLeftEmptyString = `Dividing by an empty string is always Infinity.`,
-  DivisionRightEmptyString = `'' % is always 0.`,
+  DivisionLeftEmptyString = `Dividing by an empty string is Infinity.`,
+  DivisionRightEmptyString = `'' % is 0.`,
   DivisionNumberZero = `0 divided by anything is NaN.`,
   DivisionString = `Any string division is NaN.`,
   LessThanStringEmpty = `Nothing can be less than an empty string.`,
@@ -13,8 +13,8 @@ export enum TruthyError {
   ModuloRightNumberZero = `0 % anything is falsy.`,
   ModuloRightStringEmpty = `Any empty string % is 0.`,
   ModuloRightStringWord = `This string % anything is falsy.`,
-  MultiplyEmptyString = `Multiplying an empty string leads to 0.`,
-  MultiplyStringWord = `Multiplying any non-numeric string leads to NaN`,
+  MultiplyEmptyString = `Multiplying an empty string is 0.`,
+  MultiplyStringWord = `Multiplying any non-numeric string is NaN`,
   MultiplyZero = `Anything multiplied by 0 is falsy.`,
   SubractionString = `Subtracting any string leads to NaN`,
 }
@@ -29,14 +29,14 @@ const printBasis = (basis: any) => {
   }
 }
 
-const getEquation = (side: SideLabel, operator: Operator, basis: any): string =>
+export const getProblem = (side: SideLabel, operator: Operator, basis: any): string =>
   side === SideLabel.left
-    ? `??? ${operator} ${printBasis(basis)}`
-    : `${printBasis(basis)} ${operator} ???`
+    ? `[?] ${operator} ${printBasis(basis)}`
+    : `${printBasis(basis)} ${operator} [?]`
 
 const error = (side: SideLabel, operator: Operator, basis: any, error: TruthyError): string => {
-  const equation = getEquation(side, operator, basis)
-  const fullMessage = `${equation}\nImpossible: ${error}`
+  const problem = getProblem(side, operator, basis)
+  const fullMessage = `${problem}\nImpossible: ${error}`
   console.log(fullMessage)
   return fullMessage
 }

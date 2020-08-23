@@ -1,8 +1,8 @@
-import { left, right, Operator, SideLabel, TruthyError } from './'
+import { left, right, Operator, SideLabel, TruthyError, getProblem } from './'
 
 const sides: SideRun[] = [
   ['get left', SideLabel.left, left],
-  // ['get right', SideLabel.right, right],
+  ['get right', SideLabel.right, right],
 ]
 
 const operators: Operator[] = [
@@ -126,14 +126,15 @@ const getEvalString = (label: SideLabel, fn: Function, operator: string, basis: 
     : `${safeBasis} ${operator} ${safeValue}`
 }
 
+const getExpectedError = (label, impossibleLeft, impossibleRight, operator) =>
+  (label === SideLabel.left && impossibleLeft[operator])
+  || (label === SideLabel.right && impossibleRight[operator])
+
 describe.each(sides)('%s', (_labelName, label, fn) => {
   describe.each(operators)('%s', (operator: Operator) => {
     it.each(itOptions)('%s', (basis, impossibleLeft, impossibleRight) => {
 
-      const expectedError = (label === SideLabel.left
-                             && impossibleLeft[operator])
-                           || (label === SideLabel.right
-                               && impossibleRight[operator])
+      const expectedError = getExpectedError(label, impossibleLeft, impossibleRight, operator)
 
       if (expectedError) {
         expect(() => {
@@ -141,7 +142,8 @@ describe.each(sides)('%s', (_labelName, label, fn) => {
         }).toThrow(expectedError)
       } else {
         const evalString = getEvalString(label, fn, operator, basis)
-        // console.log(evalString)
+        const problem = getProblem(label, operator, basis)
+        console.log(`${problem}\n${evalString}`)
         expect(eval(
           evalString
         )).toBeTruthy()
