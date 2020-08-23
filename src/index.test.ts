@@ -1,6 +1,6 @@
 import { left, right, Operator, SideLabel, TruthyError, getProblem } from './'
 
-const verbose = 1
+const verbose = 0
 
 const sides: SideRun[] = [
   ['get left', SideLabel.left, left],
