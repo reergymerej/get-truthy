@@ -70,7 +70,7 @@ const getGreaterOrLessThan = (change: number) => (
         }
         return "any string"
       }
-      const codePoint = (basis || "A").codePointAt(0)
+      const codePoint = basis.codePointAt(0)
       const nextString = String.fromCodePoint(codePoint + change)
       const result = nextString + basis.substring(1)
       return result
@@ -221,7 +221,7 @@ const getModulo = (side: SideLabel, basis: any): any => {
         if (basis === 0) {
           throw new Error(error(side, "%", basis, TruthyError.ModuloNumberZero))
         }
-        return basis * 2 || 1
+        return basis * 2
       case "string": {
         const parsed = parseFloat(basis)
         if (isNaN(parsed)) {
