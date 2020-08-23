@@ -136,8 +136,8 @@ const getEvalString = (
 
 const getExpectedError = (
   label: SideLabel,
-  impossibleLeft,
-  impossibleRight,
+  impossibleLeft: ItOption["1"],
+  impossibleRight: ItOption["2"],
   operator: Operator,
 ) =>
   (label === SideLabel.left && impossibleLeft[operator]) ||
