@@ -16,6 +16,11 @@ export enum TruthyError {
   SubractionString = `Subtracting any string leads to NaN`,
 }
 
+export enum SideLabel {
+  left,
+  right,
+}
+
 const printBasis = (basis: any) => {
   const type = typeof basis
   switch (type) {
@@ -134,11 +139,6 @@ const getMultiplication = (side: SideLabel, basis: any): any => {
     default:
       throw new Error(`unhandled case "${type}"`)
   }
-}
-
-export enum SideLabel {
-  left,
-  right,
 }
 
 const getDivisionLeftStringError = (basis: any): TruthyError =>
