@@ -2,7 +2,7 @@ import { left, right, Operator, SideLabel, TruthyError } from './'
 
 const sides: SideRun[] = [
   ['get left', SideLabel.left, left],
-  ['get right', SideLabel.right, right],
+  // ['get right', SideLabel.right, right],
 ]
 
 const operators: Operator[] = [

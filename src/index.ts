@@ -19,14 +19,29 @@ export enum TruthyError {
   SubractionString = `Subtracting any string leads to NaN`,
 }
 
-// I need a smart way to figure out what we expect to throw for a combination of
-  // left/right
-  // operator
-  // input
+const printBasis = (basis: any) => {
+  const type = typeof basis
+  switch(type) {
+    case 'string':
+      return `'${basis}'`
+    default:
+      return basis
+  }
+}
 
-const error = (error: TruthyError): string => `Impossible: ${error}`
+const getEquation = (side: SideLabel, operator: Operator, basis: any): string =>
+  side === SideLabel.left
+    ? `??? ${operator} ${printBasis(basis)}`
+    : `${printBasis(basis)} ${operator} ???`
 
-const getGreaterOrLessThan = (change: number) => (basis: any): any => {
+const error = (side: SideLabel, operator: Operator, basis: any, error: TruthyError): string => {
+  const equation = getEquation(side, operator, basis)
+  const fullMessage = `${equation}\nImpossible: ${error}`
+  console.log(fullMessage)
+  return fullMessage
+}
+
+const getGreaterOrLessThan = (change: number) => (operator: Operator, side: SideLabel, basis: any): any => {
   const type = typeof basis
   switch(type) {
     case 'number':
@@ -34,7 +49,7 @@ const getGreaterOrLessThan = (change: number) => (basis: any): any => {
     case 'string': {
       if (!basis) {
         if (change < 0) {
-          throw new Error(error(TruthyError.LessThanStringEmpty))
+          throw new Error(error(side, operator, basis, TruthyError.LessThanStringEmpty))
         }
         return 'any string'
       }
@@ -63,31 +78,31 @@ const getAddition = (basis: any): any => {
   }
 }
 
-const getSubtraction = (basis: any): any => {
+const getSubtraction = (side: SideLabel, basis: any): any => {
   const type = typeof basis
   switch(type) {
     case 'number':
       return 1 - basis
     case 'string':
-      throw new Error(error(TruthyError.SubractionString))
+      throw new Error(error(side, '-', basis, TruthyError.SubractionString))
     default:
       throw new Error(`unhandled case "${type}"`)
   }
 }
 
-const getMultiplication = (basis: any): any => {
+const getMultiplication = (side: SideLabel, basis: any): any => {
   const type = typeof basis
   switch(type) {
     case 'number':
       if (basis === 0) {
-        throw new Error(error(TruthyError.MultiplyZero))
+        throw new Error(error(side, '*', basis, TruthyError.MultiplyZero))
       }
       return basis
     case 'string': {
-      throw new Error(error(
+      throw new Error(error(side, '*', basis,
         basis
-        ? TruthyError.MultiplyStringWord
-        : TruthyError.MultiplyEmptyString
+          ? TruthyError.MultiplyStringWord
+          : TruthyError.MultiplyEmptyString
       ))
     }
     default:
@@ -121,12 +136,12 @@ const getDivision = (side: SideLabel, basis: any): any => {
         return basis
       } else {
         if (basis === 0) {
-          throw new Error(error(TruthyError.DivisionNumberZero))
+          throw new Error(error(side, '/', basis, TruthyError.DivisionNumberZero))
         }
         return basis
       }
     case 'string':
-      throw new Error(error(
+      throw new Error(error(side, '/', basis,
         side === SideLabel.left
         ? getDivisionLeftStringError(basis)
         : getDivisionRightStringError(basis)
@@ -142,11 +157,14 @@ const getModulo = (side: SideLabel, basis: any): any => {
     switch(type) {
       case 'number':
         if (basis === 0) {
-          throw new Error(error(TruthyError.ModuloNumberZero))
+          throw new Error(error(
+            side, '%', basis,
+            TruthyError.ModuloNumberZero))
         }
         return basis * 0.5
       case 'string':
         throw new Error(error(
+          side, '%', basis,
           basis
           ? TruthyError.ModuloLeftStringWord
           : TruthyError.ModuloLeftStringEmpty
@@ -158,11 +176,15 @@ const getModulo = (side: SideLabel, basis: any): any => {
     switch(type) {
       case 'number':
         if (basis === 0) {
-          throw new Error(error(TruthyError.ModuloNumberZero))
+          throw new Error(error(
+            side, '%', basis,
+            TruthyError.ModuloNumberZero
+          ))
         }
         return basis * 2 || 1
       case 'string':
           throw new Error(error(
+            side, '%', basis,
             basis
                ? TruthyError.ModuloRightStringWord
                : TruthyError.ModuloRightStringEmpty
@@ -196,10 +218,10 @@ export const left = (operator: Operator, basis: any): any => {
   switch(operator) {
     case '>':
     case '>=':
-      return getGreaterThan(basis)
+      return getGreaterThan(operator, SideLabel.left, basis)
     case '<':
     case '<=':
-      return getLessThan(basis)
+      return getLessThan(operator, SideLabel.left, basis)
     case '==':
     case '===':
       return basis
@@ -209,9 +231,9 @@ export const left = (operator: Operator, basis: any): any => {
     case '+':
       return getAddition(basis)
     case '-':
-      return getSubtraction(basis)
+      return getSubtraction(SideLabel.left, basis)
     case '*':
-      return getMultiplication(basis)
+      return getMultiplication(SideLabel.left, basis)
     case '/':
       return getDivision(SideLabel.left, basis)
     case '%':
@@ -225,10 +247,10 @@ export const right = (operator: Operator, basis: any): any => {
   switch(operator) {
     case '>':
     case '>=':
-      return getLessThan(basis)
+      return getLessThan('<', SideLabel.right, basis)
     case '<':
     case '<=':
-      return getGreaterThan(basis)
+      return getGreaterThan('>', SideLabel.right, basis)
     case '/':
       return getDivision(SideLabel.right, basis)
     case '%':
