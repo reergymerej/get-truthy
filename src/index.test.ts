@@ -144,6 +144,31 @@ const getExpectedError = (
   (label === SideLabel.left && impossibleLeft[operator]) ||
   (label === SideLabel.right && impossibleRight[operator])
 
+const handleExpected = (
+  operator: Operator,
+  basis: any,
+  expectedError: TruthyError,
+  fn: Function,
+) => {
+  expect(() => {
+    fn(operator, basis)
+  }).toThrow(expectedError)
+}
+
+const handleStandard = (
+  label: SideLabel,
+  fn: Function,
+  operator: Operator,
+  basis: any,
+) => {
+  const evalString = getEvalString(label, fn, operator, basis)
+  const problem = getProblem(label, operator, basis)
+  if (verbose) {
+    console.log(`${problem}\n${evalString}`)
+  }
+  expect(eval(evalString)).toBeTruthy()
+}
+
 describe.each(sides)("%s", (_labelName, label, fn) => {
   describe.each(operators)("%s", (operator: Operator) => {
     it.each(itOptions)("%s", (basis, impossibleLeft, impossibleRight) => {
@@ -153,26 +178,10 @@ describe.each(sides)("%s", (_labelName, label, fn) => {
         impossibleRight,
         operator,
       )
-
-      const handleExpected = () => {
-        expect(() => {
-          fn(operator, basis)
-        }).toThrow(expectedError)
-      }
-
-      const handleStandard = () => {
-        const evalString = getEvalString(label, fn, operator, basis)
-        const problem = getProblem(label, operator, basis)
-        if (verbose) {
-          console.log(`${problem}\n${evalString}`)
-        }
-        expect(eval(evalString)).toBeTruthy()
-      }
-
       if (expectedError) {
-        handleExpected()
+        handleExpected(operator, basis, expectedError, fn)
       } else {
-        handleStandard()
+        handleStandard(label, fn, operator, basis)
       }
     })
   })

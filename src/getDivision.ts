@@ -9,11 +9,10 @@ const getDivisionRightStringError = (basis: any): TruthyError =>
 
 const getNumber = (side: SideLabel, basis: any) => {
   if (side === SideLabel.left) {
-    if (basis === 0) {
-      // anything / 0 == Infinity (truthy)
-      return 1
-    }
-    return basis
+    return basis === 0
+      ? // anything / 0 == Infinity (truthy)
+        1
+      : basis
   } else {
     if (basis === 0) {
       throw new Error(error(side, "/", basis, TruthyError.DivisionNumberZero))
