@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { left, right, Operator, SideLabel, TruthyError, getProblem } from "./"
+import { left, right } from "./"
+import { SideLabel, Operator, TruthyError } from "./types"
+import { getProblem } from "./visualize"
 
 const verbose = 0
 
@@ -98,7 +100,7 @@ type ExpectedErrors = {
 type ItOption = [
   any, // basis
   Partial<ExpectedErrors>, // throws when finding left
-  Partial<ExpectedErrors> // throws when finding right
+  Partial<ExpectedErrors>, // throws when finding right
 ]
 
 // Return value safe for eval.
@@ -122,7 +124,7 @@ const getEvalString = (
   label: SideLabel,
   fn: Function,
   operator: string,
-  basis: any
+  basis: any,
 ): string => {
   const value = fn(operator, basis)
   const safeValue = safe(value)
@@ -136,7 +138,7 @@ const getExpectedError = (
   label: SideLabel,
   impossibleLeft,
   impossibleRight,
-  operator: Operator
+  operator: Operator,
 ) =>
   (label === SideLabel.left && impossibleLeft[operator]) ||
   (label === SideLabel.right && impossibleRight[operator])
@@ -148,7 +150,7 @@ describe.each(sides)("%s", (_labelName, label, fn) => {
         label,
         impossibleLeft,
         impossibleRight,
-        operator
+        operator,
       )
 
       if (expectedError) {

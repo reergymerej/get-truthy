@@ -1,61 +1,10 @@
-export enum TruthyError {
-  DivisionLeftEmptyString = `Dividing by an empty string is Infinity.`,
-  DivisionRightEmptyString = `'' % is 0.`,
-  DivisionNumberZero = `0 divided by anything is NaN.`,
-  DivisionString = `Any string division is NaN.`,
-  LessThanStringEmpty = `Nothing can be less than an empty string.`,
-  ModuloLeftStringEmpty = `Anything % '' is NaN.`,
-  ModuloLeftStringWord = `Anything % this string is NaN.`,
-  ModuloNumberZero = `Any number % 0 is NaN.`,
-  ModuloRightNumberZero = `0 % anything is falsy.`,
-  ModuloRightStringEmpty = `Any empty string % is 0.`,
-  ModuloRightStringWord = `This string % anything is falsy.`,
-  MultiplyEmptyString = `Multiplying an empty string is 0.`,
-  MultiplyStringWord = `Multiplying any non-numeric string is NaN`,
-  MultiplyZero = `Anything multiplied by 0 is falsy.`,
-  SubractionString = `Subtracting any string leads to NaN`,
-}
-
-export enum SideLabel {
-  left,
-  right,
-}
-
-const printBasis = (basis: any) => {
-  const type = typeof basis
-  switch (type) {
-    case "string":
-      return `'${basis}'`
-    default:
-      return basis
-  }
-}
-
-export const getProblem = (
-  side: SideLabel,
-  operator: Operator,
-  basis: any
-): string =>
-  side === SideLabel.left
-    ? `[?] ${operator} ${printBasis(basis)}`
-    : `${printBasis(basis)} ${operator} [?]`
-
-const error = (
-  side: SideLabel,
-  operator: Operator,
-  basis: any,
-  error: TruthyError
-): string => {
-  const problem = getProblem(side, operator, basis)
-  const fullMessage = `${problem}\nImpossible: ${error}`
-  // console.log(fullMessage)
-  return fullMessage
-}
+import { SideLabel, TruthyError, Operator } from "./types"
+import { error } from "./visualize"
 
 const getGreaterOrLessThan = (change: number) => (
   operator: Operator,
   side: SideLabel,
-  basis: any
+  basis: any,
 ): any => {
   const type = typeof basis
   switch (type) {
@@ -65,7 +14,7 @@ const getGreaterOrLessThan = (change: number) => (
       if (!basis) {
         if (change < 0) {
           throw new Error(
-            error(side, operator, basis, TruthyError.LessThanStringEmpty)
+            error(side, operator, basis, TruthyError.LessThanStringEmpty),
           )
         }
         return "any string"
@@ -130,8 +79,8 @@ const getMultiplication = (side: SideLabel, basis: any): any => {
             basis,
             basis
               ? TruthyError.MultiplyStringWord
-              : TruthyError.MultiplyEmptyString
-          )
+              : TruthyError.MultiplyEmptyString,
+          ),
         )
       }
       return getMultiplication(side, parsed)
@@ -161,7 +110,7 @@ const getDivision = (side: SideLabel, basis: any): any => {
       } else {
         if (basis === 0) {
           throw new Error(
-            error(side, "/", basis, TruthyError.DivisionNumberZero)
+            error(side, "/", basis, TruthyError.DivisionNumberZero),
           )
         }
         return basis
@@ -176,8 +125,8 @@ const getDivision = (side: SideLabel, basis: any): any => {
             basis,
             side === SideLabel.left
               ? getDivisionLeftStringError(basis)
-              : getDivisionRightStringError(basis)
-          )
+              : getDivisionRightStringError(basis),
+          ),
         )
       }
       return getDivision(side, parsed)
@@ -206,8 +155,8 @@ const getModulo = (side: SideLabel, basis: any): any => {
               basis,
               basis
                 ? TruthyError.ModuloLeftStringWord
-                : TruthyError.ModuloLeftStringEmpty
-            )
+                : TruthyError.ModuloLeftStringEmpty,
+            ),
           )
         }
         return getModulo(side, parsed)
@@ -232,8 +181,8 @@ const getModulo = (side: SideLabel, basis: any): any => {
               basis,
               basis
                 ? TruthyError.ModuloRightStringWord
-                : TruthyError.ModuloRightStringEmpty
-            ) + "\nhttps://www.destroyallsoftware.com/talks/wat"
+                : TruthyError.ModuloRightStringEmpty,
+            ) + "\nhttps://www.destroyallsoftware.com/talks/wat",
           )
         }
         return getModulo(side, parsed)
@@ -243,50 +192,6 @@ const getModulo = (side: SideLabel, basis: any): any => {
     }
   }
 }
-
-export type Operator =
-  | ">"
-  | "<"
-  | ">="
-  | "<="
-  | "=="
-  | "==="
-  | "!="
-  | "!=="
-  | "+"
-  | "-"
-  | "*"
-  | "/"
-  | "%"
-// | "**"
-
-// relational
-// in
-// <
-// >
-// <=
-// >=
-//
-// equality operators
-//==
-// !=
-// ===
-// !==
-//
-// bitwise
-// &
-// |
-// ^
-// | ">>"
-// | ">>>"
-// | "<<"
-//
-// binary logical
-// &&
-// ||
-//
-//
-// | "instanceof"
 
 export const left = (operator: Operator, basis: any): any => {
   switch (operator) {
