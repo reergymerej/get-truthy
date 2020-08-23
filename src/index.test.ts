@@ -1,5 +1,104 @@
-import { left, right, Operator, SideLabel } from './'
+import { left, right, Operator, SideLabel, TruthyError } from './'
 
+const sides: SideRun[] = [
+  ['get left', SideLabel.left, left],
+  ['get right', SideLabel.right, right],
+]
+
+const operators: Operator[] = [
+  '!=',
+  '!==',
+  '+',
+  '-',
+  '<',
+  '<=',
+  '==',
+  '===',
+  '>',
+  '>=',
+  '*',
+  '/',
+  '%',
+]
+
+const itOptions: ItOption[] = [
+  [-100, {}, {}],
+  [100, {}, {}],
+  [-1, {}, {}],
+  [1, {}, {}],
+  [0,
+    {
+      '*': TruthyError.MultiplyZero,
+      '%': TruthyError.ModuloNumberZero,
+    },
+    {
+      '*': TruthyError.MultiplyZero,
+      '/': TruthyError.DivisionNumberZero,
+      '%': TruthyError.ModuloNumberZero,
+    },
+  ],
+  [1, {}, {}],
+  ['foo',
+    {
+      '-': TruthyError.SubractionString,
+      '*': TruthyError.MultiplyStringWord,
+      '/': TruthyError.DivisionString,
+      '%': TruthyError.ModuloLeftStringWord,
+    },
+    {
+      '-': TruthyError.SubractionString,
+      '*': TruthyError.MultiplyStringWord,
+      '/': TruthyError.DivisionString,
+      '%': TruthyError.ModuloRightStringWord,
+    },
+  ],
+  ['',
+    {
+      '-': TruthyError.SubractionString,
+      '<': TruthyError.LessThanStringEmpty,
+      '<=': TruthyError.LessThanStringEmpty,
+      '*': TruthyError.MultiplyEmptyString,
+      '/': TruthyError.DivisionLeftEmptyString,
+      '%': TruthyError.ModuloLeftStringEmpty,
+    },
+    {
+      '-': TruthyError.SubractionString,
+      '>': TruthyError.LessThanStringEmpty,
+      '>=': TruthyError.LessThanStringEmpty,
+      '*': TruthyError.MultiplyEmptyString,
+      '/': TruthyError.DivisionRightEmptyString,
+      '%': TruthyError.ModuloRightStringEmpty,
+    },
+  ],
+  // ['3',
+  //   {},
+  //   {},
+  // ],
+  // '0x000000a'
+  // '5' % 6 == true
+  // 9 - '10' == true
+]
+
+
+// --------------------------------------------------------------------------------
+// The tests are kinda whacky.  Just use the values above to add/remove test
+// cases.
+
+type SideRun = [
+  string,
+  SideLabel,
+  Function,
+]
+
+type ExpectedErrors = {
+  [key in Operator]: TruthyError
+}
+
+type ItOption = [
+  any, // basis
+  Partial<ExpectedErrors>, // throws when finding left
+  Partial<ExpectedErrors>, // throws when finding right
+]
 
 // Return value safe for eval.
 const safe = (value: any) => {
@@ -27,61 +126,19 @@ const getEvalString = (label: SideLabel, fn: Function, operator: string, basis: 
     : `${safeBasis} ${operator} ${safeValue}`
 }
 
-describe.each([
-  ['get left', SideLabel.left, left],
-  ['get right', SideLabel.right, right],
-])('%s', (_labelName, label, fn) => {
-  describe.each([
-    '!=',
-    '!==',
-    '+',
-    '-',
-    '<',
-    '<=',
-    '==',
-    '===',
-    '>',
-    '>=',
-    '*',
-    '/',
-    '%',
-  ] as Operator[])
-  ('%s', (operator: Operator) => {
-    type ItOption = [
-      any, // basis
-      Operator[], // throws when finding left
-      Operator[], // throws when finding right
-    ]
+describe.each(sides)('%s', (_labelName, label, fn) => {
+  describe.each(operators)('%s', (operator: Operator) => {
+    it.each(itOptions)('%s', (basis, impossibleLeft, impossibleRight) => {
 
-    it.each([
-      [-100, [], []],
-      [100, [], []],
-      [-1, [], []],
-      [1, [], []],
-      [0, ['*', '%'], ['*', '/', '%']],
-      [1, [], []],
-      ['foo',
-        ['-', '*', '/', '%'],
-        ['-', '*', '/', '%'],
-      ],
-      // TODO: Consider enumerating these for quick reference.
-      ['',
-        ['-', '<', '<=', '*', '/', '%'],
-        ['-', '>', '>=', '*', '/', '%'],
-      ],
-      // ['3', [], []],
-    ] as ItOption[])
-    ('%s', (basis, impossibleLeft, impossibleRight) => {
-
-      const shouldThrow = (label === SideLabel.left
-                           && impossibleLeft.includes(operator))
+      const expectedError = (label === SideLabel.left
+                             && impossibleLeft[operator])
                            || (label === SideLabel.right
-                               && impossibleRight.includes(operator))
+                               && impossibleRight[operator])
 
-      if (shouldThrow) {
+      if (expectedError) {
         expect(() => {
           fn(operator, basis)
-        }).toThrow(/^Impossible/)
+        }).toThrow(expectedError)
       } else {
         const evalString = getEvalString(label, fn, operator, basis)
         // console.log(evalString)
