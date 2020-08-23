@@ -6,6 +6,7 @@ import { getMultiplication } from "./getMultiplication"
 import { getDivision } from "./getDivision"
 import { getModulo } from "./getModulo"
 
+// eslint-disable-next-line complexity
 export const left = (operator: Operator, basis: any): any => {
   switch (operator) {
     case ">":
@@ -35,6 +36,7 @@ export const left = (operator: Operator, basis: any): any => {
   }
 }
 
+// eslint-disable-next-line complexity
 export const right = (operator: Operator, basis: any): any => {
   switch (operator) {
     case ">":
