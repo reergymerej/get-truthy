@@ -14,7 +14,7 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": 0,
     "@typescript-eslint/explicit-module-boundary-types": 0,
     complexity: [2, 4],
-    "max-statements": [2, 9],
-    "max-depth": [2, 3],
+    "max-statements": [2, 7],
+    "max-depth": [2, 2],
   },
 }

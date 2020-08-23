@@ -1,6 +1,13 @@
 import { Operator, SideLabel, TruthyError } from "./types"
 import { error } from "./visualize"
 
+const getNextString = (change: number, basis: any): string => {
+  const codePoint = basis.codePointAt(0)
+  const nextString = String.fromCodePoint(codePoint + change)
+  const result = nextString + basis.substring(1)
+  return result
+}
+
 const getString = (change: number) => (
   operator: Operator,
   basis: any,
@@ -14,10 +21,7 @@ const getString = (change: number) => (
     }
     return "any string"
   }
-  const codePoint = basis.codePointAt(0)
-  const nextString = String.fromCodePoint(codePoint + change)
-  const result = nextString + basis.substring(1)
-  return result
+  return getNextString(change, basis)
 }
 
 const getGreaterOrLessThan = (change: number) => (

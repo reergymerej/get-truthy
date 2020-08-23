@@ -154,17 +154,25 @@ describe.each(sides)("%s", (_labelName, label, fn) => {
         operator,
       )
 
-      if (expectedError) {
+      const handleExpected = () => {
         expect(() => {
           fn(operator, basis)
         }).toThrow(expectedError)
-      } else {
+      }
+
+      const handleStandard = () => {
         const evalString = getEvalString(label, fn, operator, basis)
         const problem = getProblem(label, operator, basis)
         if (verbose) {
           console.log(`${problem}\n${evalString}`)
         }
         expect(eval(evalString)).toBeTruthy()
+      }
+
+      if (expectedError) {
+        handleExpected()
+      } else {
+        handleStandard()
       }
     })
   })
