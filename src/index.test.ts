@@ -24,58 +24,58 @@ const operators: Operator[] = [
 ]
 
 const itOptions: ItOption[] = [
-  // [-100, {}, {}],
-  // [100, {}, {}],
-  // [-1, {}, {}],
-  // [1, {}, {}],
-  // [0,
-  //   {
-  //     '*': TruthyError.MultiplyZero,
-  //     '%': TruthyError.ModuloNumberZero,
-  //   },
-  //   {
-  //     '*': TruthyError.MultiplyZero,
-  //     '/': TruthyError.DivisionNumberZero,
-  //     '%': TruthyError.ModuloNumberZero,
-  //   },
-  // ],
-  // [1, {}, {}],
-  // ['foo',
-  //   {
-  //     '-': TruthyError.SubractionString,
-  //     '*': TruthyError.MultiplyStringWord,
-  //     '/': TruthyError.DivisionString,
-  //     '%': TruthyError.ModuloLeftStringWord,
-  //   },
-  //   {
-  //     '-': TruthyError.SubractionString,
-  //     '*': TruthyError.MultiplyStringWord,
-  //     '/': TruthyError.DivisionString,
-  //     '%': TruthyError.ModuloRightStringWord,
-  //   },
-  // ],
-  // ['',
-  //   {
-  //     '-': TruthyError.SubractionString,
-  //     '<': TruthyError.LessThanStringEmpty,
-  //     '<=': TruthyError.LessThanStringEmpty,
-  //     '*': TruthyError.MultiplyEmptyString,
-  //     '/': TruthyError.DivisionLeftEmptyString,
-  //     '%': TruthyError.ModuloLeftStringEmpty,
-  //   },
-  //   {
-  //     '-': TruthyError.SubractionString,
-  //     '>': TruthyError.LessThanStringEmpty,
-  //     '>=': TruthyError.LessThanStringEmpty,
-  //     '*': TruthyError.MultiplyEmptyString,
-  //     '/': TruthyError.DivisionRightEmptyString,
-  //     '%': TruthyError.ModuloRightStringEmpty,
-  //   },
-  // ],
-  ['3',
-    {},
-    {},
+  // numbers
+  [-100, {}, {}],
+  [100, {}, {}],
+  [-1, {}, {}],
+  [1, {}, {}],
+  [0,
+    {
+      '*': TruthyError.MultiplyZero,
+      '%': TruthyError.ModuloNumberZero,
+    },
+    {
+      '*': TruthyError.MultiplyZero,
+      '/': TruthyError.DivisionNumberZero,
+      '%': TruthyError.ModuloNumberZero,
+    },
   ],
+  [1, {}, {}],
+
+  // strings
+  ['foo',
+    {
+      '-': TruthyError.SubractionString,
+      '*': TruthyError.MultiplyStringWord,
+      '/': TruthyError.DivisionString,
+      '%': TruthyError.ModuloLeftStringWord,
+    },
+    {
+      '-': TruthyError.SubractionString,
+      '*': TruthyError.MultiplyStringWord,
+      '/': TruthyError.DivisionString,
+      '%': TruthyError.ModuloRightStringWord,
+    },
+  ],
+  ['',
+    {
+      '-': TruthyError.SubractionString,
+      '<': TruthyError.LessThanStringEmpty,
+      '<=': TruthyError.LessThanStringEmpty,
+      '*': TruthyError.MultiplyEmptyString,
+      '/': TruthyError.DivisionLeftEmptyString,
+      '%': TruthyError.ModuloLeftStringEmpty,
+    },
+    {
+      '-': TruthyError.SubractionString,
+      '>': TruthyError.LessThanStringEmpty,
+      '>=': TruthyError.LessThanStringEmpty,
+      '*': TruthyError.MultiplyEmptyString,
+      '/': TruthyError.DivisionRightEmptyString,
+      '%': TruthyError.ModuloRightStringEmpty,
+    },
+  ],
+  ['3', {}, {}],
   // '0x000000a'
   // '5' % 6 == true
   // 9 - '10' == true

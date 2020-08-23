@@ -79,21 +79,24 @@ const getAddition = (basis: any): any => {
 }
 
 const getSubtraction = (side: SideLabel, basis: any): any => {
-  const parsed = parseFloat(basis)
-  const type = typeof parsed
+  const type = typeof basis
   switch(type) {
     case 'number':
       return 1 - basis
-    case 'string':
-      throw new Error(error(side, '-', basis, TruthyError.SubractionString))
+    case 'string': {
+      const parsed = parseFloat(basis)
+      if (isNaN(parsed)) {
+        throw new Error(error(side, '-', basis, TruthyError.SubractionString))
+      }
+      return getSubtraction(side, parsed)
+    }
     default:
       throw new Error(`unhandled case "${type}"`)
   }
 }
 
 const getMultiplication = (side: SideLabel, basis: any): any => {
-  const parsed = parseFloat(basis)
-  const type = typeof parsed
+  const type = typeof basis
   switch(type) {
     case 'number':
       if (basis === 0) {
@@ -101,11 +104,15 @@ const getMultiplication = (side: SideLabel, basis: any): any => {
       }
       return basis
     case 'string': {
-      throw new Error(error(side, '*', basis,
-        basis
-          ? TruthyError.MultiplyStringWord
-          : TruthyError.MultiplyEmptyString
-      ))
+      const parsed = parseFloat(basis)
+      if (isNaN(parsed)) {
+        throw new Error(error(side, '*', basis,
+          basis
+            ? TruthyError.MultiplyStringWord
+            : TruthyError.MultiplyEmptyString
+        ))
+      }
+      return getMultiplication(side, parsed)
     }
     default:
       throw new Error(`unhandled case "${type}"`)
@@ -126,8 +133,7 @@ const getDivisionRightStringError = (basis: any): TruthyError => basis
   : TruthyError.DivisionRightEmptyString
 
 const getDivision = (side: SideLabel, basis: any): any => {
-  const parsed = parseFloat(basis)
-  const type = typeof parsed
+  const type = typeof basis
   // TODO: refactor
   switch(type) {
     case 'number':
@@ -143,36 +149,45 @@ const getDivision = (side: SideLabel, basis: any): any => {
         }
         return basis
       }
-    case 'string':
-      throw new Error(error(side, '/', basis,
-        side === SideLabel.left
-        ? getDivisionLeftStringError(basis)
-        : getDivisionRightStringError(basis)
-      ))
+    case 'string': {
+      const parsed = parseFloat(basis)
+      if (isNaN(parsed)) {
+        throw new Error(error(side, '/', basis,
+                              side === SideLabel.left
+                                ? getDivisionLeftStringError(basis)
+                                : getDivisionRightStringError(basis)
+                             ))
+      }
+      return getDivision(side, parsed)
+    }
     default:
       throw new Error(`unhandled case "${type}"`)
   }
 }
 
 const getModulo = (side: SideLabel, basis: any): any => {
-  const parsed = parseFloat(basis)
-  const type = typeof parsed
+  const type = typeof basis
   if (side === SideLabel.left) {
     switch(type) {
       case 'number':
         if (basis === 0) {
-          throw new Error(error(
-            side, '%', basis,
-            TruthyError.ModuloNumberZero))
-        }
-        return basis * 0.5
-      case 'string':
         throw new Error(error(
           side, '%', basis,
-          basis
-          ? TruthyError.ModuloLeftStringWord
-          : TruthyError.ModuloLeftStringEmpty
-        ))
+          TruthyError.ModuloNumberZero))
+      }
+      return basis * 0.5
+      case 'string': {
+        const parsed = parseFloat(basis)
+        if (isNaN(parsed)) {
+          throw new Error(error(
+            side, '%', basis,
+            basis
+              ? TruthyError.ModuloLeftStringWord
+              : TruthyError.ModuloLeftStringEmpty
+          ))
+        }
+        return getModulo(side, parsed)
+      }
       default:
         throw new Error(`unhandled case "${type}"`)
     }
@@ -180,21 +195,26 @@ const getModulo = (side: SideLabel, basis: any): any => {
     switch(type) {
       case 'number':
         if (basis === 0) {
-          throw new Error(error(
-            side, '%', basis,
-            TruthyError.ModuloNumberZero
-          ))
-        }
-        return basis * 2 || 1
-      case 'string':
+        throw new Error(error(
+          side, '%', basis,
+          TruthyError.ModuloNumberZero
+        ))
+      }
+      return basis * 2 || 1
+      case 'string': {
+        const parsed = parseFloat(basis)
+        if (isNaN(parsed)) {
           throw new Error(error(
             side, '%', basis,
             basis
-               ? TruthyError.ModuloRightStringWord
-               : TruthyError.ModuloRightStringEmpty
-            )
-            + '\nhttps://www.destroyallsoftware.com/talks/wat'
+              ? TruthyError.ModuloRightStringWord
+              : TruthyError.ModuloRightStringEmpty
           )
+          + '\nhttps://www.destroyallsoftware.com/talks/wat'
+                         )
+        }
+        return getModulo(side, parsed)
+      }
       default:
         throw new Error(`unhandled case "${type}"`)
     }
