@@ -86,6 +86,18 @@ const strings: ItOption[] = [
 const numericStrings: ItOption[] = [
   ["3", {}, {}],
   ["0x000000a", {}, {}],
+  [
+    "0",
+    {
+      "*": TruthyError.MultiplyZero,
+      "%": TruthyError.ModuloNumberZero,
+    },
+    {
+      "*": TruthyError.MultiplyZero,
+      "/": TruthyError.DivisionNumberZero,
+      "%": TruthyError.ModuloNumberZero,
+    },
+  ],
   // '5' % 6 == true
   // 9 - '10' == true
 ]

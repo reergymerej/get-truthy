@@ -43,7 +43,7 @@ const getRightString = (basis: any) => {
     case StringType.Normal:
       throw rightError(basis, TruthyError.DivisionString)
     case StringType.Numeric:
-      return getDivision(SideLabel.left, Number(basis))
+      return getDivision(SideLabel.right, Number(basis))
     default:
       throw new Error(`unhandled case "${getStringType(basis)}"`)
   }

@@ -5,6 +5,7 @@ import { getSubtraction } from "./getSubtraction"
 import { getMultiplication } from "./getMultiplication"
 import { getDivision } from "./getDivision"
 import { getModulo } from "./getModulo"
+import { getNotEqual } from "./getNotEqual"
 
 // eslint-disable-next-line complexity
 export const left = (operator: Operator, basis: any): any => {
@@ -20,7 +21,7 @@ export const left = (operator: Operator, basis: any): any => {
       return basis
     case "!=":
     case "!==":
-      return !basis
+      return getNotEqual(basis)
     case "+":
       return getAddition(basis)
     case "-":
