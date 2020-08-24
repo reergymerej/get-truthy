@@ -1,11 +1,13 @@
-import { TruthyError, SideLabel } from "./types"
+import { TruthyError, SideLabel, StringType } from "./types"
 import { error } from "./visualize"
+import { getStringType } from "./util"
 
-const getDivisionLeftStringError = (basis: any): TruthyError =>
-  basis ? TruthyError.DivisionString : TruthyError.DivisionLeftEmptyString
-
-const getDivisionRightStringError = (basis: any): TruthyError =>
-  basis ? TruthyError.DivisionString : TruthyError.DivisionRightEmptyString
+const divisionError = (side: SideLabel) => (
+  basis: any,
+  truthyError: TruthyError,
+) => new Error(error(side, "/", basis, truthyError))
+const leftError = divisionError(SideLabel.left)
+const rightError = divisionError(SideLabel.right)
 
 const getNumber = (side: SideLabel, basis: any) => {
   if (side === SideLabel.left) {
@@ -15,28 +17,43 @@ const getNumber = (side: SideLabel, basis: any) => {
       : basis
   } else {
     if (basis === 0) {
-      throw new Error(error(side, "/", basis, TruthyError.DivisionNumberZero))
+      throw divisionError(side)(basis, TruthyError.DivisionNumberZero)
     }
     return basis
   }
 }
 
-const getString = (side: SideLabel, basis: any) => {
-  const parsed = parseFloat(basis)
-  if (isNaN(parsed)) {
-    throw new Error(
-      error(
-        side,
-        "/",
-        basis,
-        side === SideLabel.left
-          ? getDivisionLeftStringError(basis)
-          : getDivisionRightStringError(basis),
-      ),
-    )
+const getLeftString = (basis: any) => {
+  switch (getStringType(basis)) {
+    case StringType.Empty:
+      throw leftError(basis, TruthyError.DivisionLeftEmptyString)
+    case StringType.Normal:
+      throw leftError(basis, TruthyError.DivisionString)
+    case StringType.Numeric:
+      return getDivision(SideLabel.left, Number(basis))
+    default:
+      throw new Error(`unhandled case "${getStringType(basis)}"`)
   }
-  return getDivision(side, parsed)
 }
+
+const getRightString = (basis: any) => {
+  switch (getStringType(basis)) {
+    case StringType.Empty:
+      throw rightError(basis, TruthyError.DivisionRightEmptyString)
+    case StringType.Normal:
+      throw rightError(basis, TruthyError.DivisionString)
+    case StringType.Numeric:
+      return getDivision(SideLabel.left, Number(basis))
+    default:
+      throw new Error(`unhandled case "${getStringType(basis)}"`)
+  }
+}
+
+const getString = (side: SideLabel, basis: any) =>
+  side === SideLabel.left
+    ? //
+      getLeftString(basis)
+    : getRightString(basis)
 
 export const getDivision = (side: SideLabel, basis: any): any => {
   const type = typeof basis

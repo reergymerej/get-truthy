@@ -26,8 +26,7 @@ const operators: Operator[] = [
   "%",
 ]
 
-const itOptions: ItOption[] = [
-  // numbers
+const numbers: ItOption[] = [
   [-100, {}, {}],
   [100, {}, {}],
   [-1, {}, {}],
@@ -45,8 +44,9 @@ const itOptions: ItOption[] = [
     },
   ],
   [1, {}, {}],
+]
 
-  // strings
+const strings: ItOption[] = [
   [
     "foo",
     {
@@ -81,10 +81,20 @@ const itOptions: ItOption[] = [
       "%": TruthyError.ModuloRightStringEmpty,
     },
   ],
+]
+
+const numericStrings: ItOption[] = [
   ["3", {}, {}],
-  // '0x000000a'
+  ["0x000000a", {}, {}],
   // '5' % 6 == true
   // 9 - '10' == true
+]
+
+const itOptions: ItOption[] = [
+  //
+  ...numbers,
+  ...strings,
+  ...numericStrings,
 ]
 
 // --------------------------------------------------------------------------------

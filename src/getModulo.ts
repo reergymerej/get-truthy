@@ -1,73 +1,70 @@
-import { SideLabel, TruthyError } from "./types"
+import { SideLabel, TruthyError, StringType } from "./types"
 import { error } from "./visualize"
+import { getStringType } from "./util"
 
-const getLeftNumber = (side: SideLabel, basis: any) => {
+const modError = (side: SideLabel) => (basis: any, truthyError: TruthyError) =>
+  new Error(error(side, "%", basis, truthyError))
+const leftError = modError(SideLabel.left)
+const rightError = modError(SideLabel.right)
+
+const getLeftNumber = (basis: any) => {
   if (basis === 0) {
-    throw new Error(error(side, "%", basis, TruthyError.ModuloNumberZero))
+    throw leftError(basis, TruthyError.ModuloNumberZero)
   }
   return basis * 0.5
 }
 
-const getRightNumber = (side: SideLabel, basis: any) => {
+const getRightNumber = (basis: any) => {
   if (basis === 0) {
-    throw new Error(error(side, "%", basis, TruthyError.ModuloNumberZero))
+    throw rightError(basis, TruthyError.ModuloNumberZero)
   }
   return basis * 2
 }
 
-const getLeftString = (side: SideLabel, basis: any) => {
-  const parsed = parseFloat(basis)
-  if (isNaN(parsed)) {
-    throw new Error(
-      error(
-        side,
-        "%",
-        basis,
-        basis
-          ? TruthyError.ModuloLeftStringWord
-          : TruthyError.ModuloLeftStringEmpty,
-      ),
-    )
+const getLeftString = (basis: any) => {
+  switch (getStringType(basis)) {
+    case StringType.Empty:
+      throw rightError(basis, TruthyError.ModuloLeftStringEmpty)
+    case StringType.Normal:
+      throw rightError(basis, TruthyError.ModuloLeftStringWord)
+    case StringType.Numeric:
+      return getModulo(SideLabel.left, Number(basis))
+    default:
+      throw new Error(`unhandled case "${getStringType(basis)}"`)
   }
-  return getModulo(side, parsed)
 }
 
-const getLeft = (side: SideLabel, basis: any) => {
+const getRightString = (basis: any) => {
+  switch (getStringType(basis)) {
+    case StringType.Empty:
+      throw rightError(basis, TruthyError.ModuloRightStringEmpty)
+    case StringType.Normal:
+      throw rightError(basis, TruthyError.ModuloRightStringWord)
+    case StringType.Numeric:
+      return getModulo(SideLabel.right, Number(basis))
+    default:
+      throw new Error(`unhandled case "${getStringType(basis)}"`)
+  }
+}
+
+const getLeft = (basis: any) => {
   const type = typeof basis
   switch (type) {
     case "number":
-      return getLeftNumber(side, basis)
+      return getLeftNumber(basis)
     case "string":
-      return getLeftString(side, basis)
+      return getLeftString(basis)
     default:
       throw new Error(`unhandled case "${type}"`)
   }
 }
-
-const getRightString = (side: SideLabel, basis: any) => {
-  const parsed = parseFloat(basis)
-  if (isNaN(parsed)) {
-    throw new Error(
-      error(
-        side,
-        "%",
-        basis,
-        basis
-          ? TruthyError.ModuloRightStringWord
-          : TruthyError.ModuloRightStringEmpty,
-      ) + "\nhttps://www.destroyallsoftware.com/talks/wat",
-    )
-  }
-  return getModulo(side, parsed)
-}
-
-const getRight = (side: SideLabel, basis: any) => {
+const getRight = (basis: any) => {
   const type = typeof basis
   switch (type) {
     case "number":
-      return getRightNumber(side, basis)
+      return getRightNumber(basis)
     case "string":
-      return getRightString(side, basis)
+      return getRightString(basis)
     default:
       throw new Error(`unhandled case "${type}"`)
   }
@@ -75,7 +72,5 @@ const getRight = (side: SideLabel, basis: any) => {
 
 export const getModulo = (side: SideLabel, basis: any): any =>
   side === SideLabel.left
-    ? //
-      getLeft(side, basis)
-    : //
-      getRight(side, basis)
+    ? getLeft(basis) //
+    : getRight(basis)

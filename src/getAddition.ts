@@ -2,9 +2,9 @@ export const getAddition = (basis: any): any => {
   const type = typeof basis
   switch (type) {
     case "number":
-      return 1 - basis
+      return basis ? 0 : 1
     case "string":
-      return "any string"
+      return "anything"
     default:
       throw new Error(`unhandled case "${type}"`)
   }

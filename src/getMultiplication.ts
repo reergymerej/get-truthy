@@ -1,5 +1,6 @@
-import { SideLabel, TruthyError } from "./types"
+import { SideLabel, TruthyError, StringType } from "./types"
 import { error } from "./visualize"
+import { getStringType } from "./util"
 
 const getNumber = (side: SideLabel, basis: any) => {
   if (basis === 0) {
@@ -9,20 +10,16 @@ const getNumber = (side: SideLabel, basis: any) => {
 }
 
 const getString = (side: SideLabel, basis: any) => {
-  const parsed = parseFloat(basis)
-  if (isNaN(parsed)) {
-    throw new Error(
-      error(
-        side,
-        "*",
-        basis,
-        basis
-          ? TruthyError.MultiplyStringWord
-          : TruthyError.MultiplyEmptyString,
-      ),
-    )
+  switch (getStringType(basis)) {
+    case StringType.Empty:
+      throw new Error(error(side, "*", basis, TruthyError.MultiplyEmptyString))
+    case StringType.Normal:
+      throw new Error(error(side, "*", basis, TruthyError.MultiplyStringWord))
+    case StringType.Numeric:
+      return getMultiplication(side, Number(basis))
+    default:
+      throw new Error(`unhandled case "${getStringType(basis)}"`)
   }
-  return getMultiplication(side, parsed)
 }
 
 export const getMultiplication = (side: SideLabel, basis: any): any => {
