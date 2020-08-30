@@ -9,7 +9,7 @@
     "watch": "tsc --watch",
     "test": "jest",
     "lint": "eslint src",
-    "coveralls": "test --coverage && cat ./coverage/lcov.info | coveralls"
+    "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",

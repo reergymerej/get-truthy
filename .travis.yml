@@ -9,3 +9,7 @@ before_install: # if "install" is overridden
   - sudo apt-get install -y -qq yarn
 cache:
   yarn: true
+script:
+  - yarn test --coverage
+after_success:
+  - "yarn coveralls"
