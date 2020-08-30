@@ -1,19 +1,19 @@
 export enum TruthyError {
-  DivisionLeftEmptyString = `Dividing by an empty string is Infinity.`,
-  DivisionRightEmptyString = `'' divided by anything is 0.`,
-  DivisionNumberZero = `0 divided by anything is NaN.`,
-  DivisionString = `Any string division is NaN.`,
+  DivisionLeftEmptyString = `Anything divided by an empty string is falsy.`,
+  DivisionRightEmptyString = `Any empty string divided by anything is falsy.`,
+  DivisionNumberZero = `0 divided by anything is falsy.`,
+  DivisionString = `Any string division is falsy.`,
   LessThanStringEmpty = `Nothing can be less than an empty string.`,
-  ModuloLeftStringEmpty = `Anything % '' is NaN.`,
-  ModuloLeftStringWord = `Anything % this string is NaN.`,
-  ModuloNumberZero = `Any number % 0 is NaN.`,
+  ModuloLeftStringEmpty = `Anything % an empty string is falsy.`,
+  ModuloLeftStringWord = `Anything % this string is falsy.`,
+  ModuloNumberZero = `Any number % 0 is falsy.`,
   ModuloRightNumberZero = `0 % anything is falsy.`,
   ModuloRightStringEmpty = `'' % anything is 0.`,
   ModuloRightStringWord = `This string % anything is falsy.`,
   MultiplyEmptyString = `Multiplying an empty string is 0.`,
-  MultiplyStringWord = `Multiplying any non-numeric string is NaN`,
+  MultiplyStringWord = `Multiplying any non-numeric string is falsy`,
   MultiplyZero = `Anything multiplied by 0 is falsy.`,
-  SubractionString = `Subtracting any string leads to NaN`,
+  SubractionString = `Subtraction with this string is always falsy.`,
 }
 
 export enum SideLabel {
@@ -22,34 +22,25 @@ export enum SideLabel {
 }
 
 export type Operator =
+  // relational
+  // in
+  // "instanceof"
   | ">"
   | "<"
   | ">="
   | "<="
+  // equality
   | "=="
   | "==="
   | "!="
   | "!=="
+  // arithmetic
   | "+"
   | "-"
   | "*"
   | "/"
   | "%"
-// | "**"
-
-// relational
-// in
-// <
-// >
-// <=
-// >=
-//
-// equality operators
-//==
-// !=
-// ===
-// !==
-//
+  | "**"
 // bitwise
 // &
 // |
@@ -57,13 +48,9 @@ export type Operator =
 // | ">>"
 // | ">>>"
 // | "<<"
-//
 // binary logical
 // &&
 // ||
-//
-//
-// | "instanceof"
 
 export enum StringType {
   Empty,

@@ -6,6 +6,7 @@ import { getMultiplication } from "./getMultiplication"
 import { getDivision } from "./getDivision"
 import { getModulo } from "./getModulo"
 import { getNotEqual } from "./getNotEqual"
+import { getExponentiation } from "./getExponentiation"
 
 // eslint-disable-next-line complexity
 export const left = (operator: Operator, basis: any): any => {
@@ -32,6 +33,8 @@ export const left = (operator: Operator, basis: any): any => {
       return getDivision(SideLabel.left, basis)
     case "%":
       return getModulo(SideLabel.left, basis)
+    case "**":
+      return getExponentiation(SideLabel.left, basis)
     default:
       throw new Error(`unhandled case "${operator}"`)
   }
@@ -50,6 +53,8 @@ export const right = (operator: Operator, basis: any): any => {
       return getDivision(SideLabel.right, basis)
     case "%":
       return getModulo(SideLabel.right, basis)
+    case "**":
+      return getExponentiation(SideLabel.right, basis)
     default:
       return left(operator, basis)
   }

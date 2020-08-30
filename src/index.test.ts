@@ -3,7 +3,7 @@ import { left, right } from "./"
 import { SideLabel, Operator, TruthyError } from "./types"
 import { getProblem } from "./visualize"
 
-const verbose = 0
+const verbose = 1
 
 const sides: SideRun[] = [
   ["get left", SideLabel.left, left],
@@ -11,26 +11,23 @@ const sides: SideRun[] = [
 ]
 
 const operators: Operator[] = [
-  "!=",
-  "!==",
-  "+",
-  "-",
-  "<",
-  "<=",
-  "==",
-  "===",
-  ">",
-  ">=",
-  "*",
-  "/",
-  "%",
+  // "!=",
+  // "!==",
+  // "+",
+  // "-",
+  // "<",
+  // "<=",
+  // "==",
+  // "===",
+  // ">",
+  // ">=",
+  // "*",
+  // "/",
+  // "%",
+  "**",
 ]
 
 const numbers: ItOption[] = [
-  [-100, {}, {}],
-  [100, {}, {}],
-  [-1, {}, {}],
-  [1, {}, {}],
   [
     0,
     {
@@ -43,7 +40,10 @@ const numbers: ItOption[] = [
       "%": TruthyError.ModuloNumberZero,
     },
   ],
-  [1, {}, {}],
+  // [-1, {}, {}],
+  // [1, {}, {}],
+  // [-100, {}, {}],
+  // [100, {}, {}],
 ]
 
 const strings: ItOption[] = [
@@ -98,15 +98,13 @@ const numericStrings: ItOption[] = [
       "%": TruthyError.ModuloNumberZero,
     },
   ],
-  // '5' % 6 == true
-  // 9 - '10' == true
 ]
 
 const itOptions: ItOption[] = [
   //
   ...numbers,
-  ...strings,
-  ...numericStrings,
+  // ...strings,
+  // ...numericStrings,
 ]
 
 // --------------------------------------------------------------------------------
@@ -127,20 +125,31 @@ type ItOption = [
 
 // Return value safe for eval.
 // eslint-disable-next-line complexity
-const safe = (value: any) => {
+const safe = (value: any): string => {
   const type = typeof value
+  let result: string
   switch (type) {
     case "number":
-      return value
+      result = value
+      break
     case "string":
-      return `"${value}"`
+      result = `"${value}"`
+      break
     case "boolean":
-      return value
+      result = value
+      break
     case "undefined":
-      return value
+      result = value
+      break
+    case "object":
+      if (value === null) {
+        return null
+      }
+    // falls through
     default:
       throw new Error(`unhandled case "${type}"`)
   }
+  return `(${result})`
 }
 
 const getEvalString = (

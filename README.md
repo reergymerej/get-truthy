@@ -44,5 +44,4 @@ Impossible: This string % anything is falsy.
 * tests - `yarn test`
 * watch - `yarn watch`
 * dev mode - `yarn dev --inspect`
-
-
+* lint - `yarn lint`
