@@ -2,6 +2,8 @@
 
 Show me a **binary operator** and a value, I'll show you another value to make it truthy.
 
+[![Build Status](https://travis-ci.org/reergymerej/get-truthy.svg?branch=master)](https://travis-ci.org/reergymerej/get-truthy)
+
 ## Usage
 
 ```js
