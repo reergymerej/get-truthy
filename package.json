@@ -8,8 +8,7 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "test": "jest",
-    "lint": "eslint src",
-    "coveralls": "cat ./coverage/lcov.info | coveralls"
+    "lint": "eslint src"
   },
   "repository": {
     "type": "git",

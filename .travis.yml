@@ -11,3 +11,5 @@ cache:
   yarn: true
 script:
   - yarn test --coverage
+after_success:
+  - cat ./coverage/lcov.info | coveralls
