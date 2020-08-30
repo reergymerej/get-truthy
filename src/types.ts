@@ -1,10 +1,11 @@
 export enum TruthyError {
   DivisionLeftEmptyString = `Anything divided by an empty string is falsy.`,
-  DivisionRightEmptyString = `Any empty string divided by anything is falsy.`,
   DivisionNumberZero = `0 divided by anything is falsy.`,
+  DivisionRightEmptyString = `Any empty string divided by anything is falsy.`,
   DivisionString = `Any string division is falsy.`,
   ExpoLeftStringWord = `Anything raised to this exponent is falsy.`,
   LessThanStringEmpty = `Nothing can be less than an empty string.`,
+  LogicalAnd = `Anything && this value is falsy.`,
   ModuloLeftStringEmpty = `Anything % an empty string is falsy.`,
   ModuloLeftStringWord = `Anything % this string is falsy.`,
   ModuloNumberZero = `Any number % 0 is falsy.`,
@@ -42,6 +43,9 @@ export type Operator =
   | "/"
   | "%"
   | "**"
+  // binary logical
+  | "&&"
+// ||
 // bitwise
 // &
 // |
@@ -49,9 +53,6 @@ export type Operator =
 // | ">>"
 // | ">>>"
 // | "<<"
-// binary logical
-// &&
-// ||
 
 export enum StringType {
   Empty,

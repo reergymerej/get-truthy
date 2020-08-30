@@ -25,6 +25,7 @@ const operators: Operator[] = [
   "/",
   "%",
   "**",
+  "&&",
 ]
 
 const numbers: ItOption[] = [
@@ -33,11 +34,13 @@ const numbers: ItOption[] = [
     {
       "*": TruthyError.MultiplyZero,
       "%": TruthyError.ModuloNumberZero,
+      "&&": TruthyError.LogicalAnd,
     },
     {
       "*": TruthyError.MultiplyZero,
       "/": TruthyError.DivisionNumberZero,
       "%": TruthyError.ModuloNumberZero,
+      "&&": TruthyError.LogicalAnd,
     },
   ],
   [-1, {}, {}],
@@ -72,6 +75,7 @@ const strings: ItOption[] = [
       "*": TruthyError.MultiplyEmptyString,
       "/": TruthyError.DivisionLeftEmptyString,
       "%": TruthyError.ModuloLeftStringEmpty,
+      "&&": TruthyError.LogicalAnd,
     },
     {
       "-": TruthyError.SubractionString,
@@ -80,6 +84,7 @@ const strings: ItOption[] = [
       "*": TruthyError.MultiplyEmptyString,
       "/": TruthyError.DivisionRightEmptyString,
       "%": TruthyError.ModuloRightStringEmpty,
+      "&&": TruthyError.LogicalAnd,
     },
   ],
 ]
