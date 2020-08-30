@@ -10,10 +10,7 @@
     "test": "jest",
     "lint": "eslint src"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/reergymerej/start-node-typescript.git"
-  },
+  "repository": "git@github.com:reergymerej/get-truthy.git",
   "author": "Jeremy Greer <jex.grizzle@gmail.com>",
   "license": "ISC",
   "bugs": {
