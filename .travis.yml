@@ -11,5 +11,3 @@ cache:
   yarn: true
 script:
   - yarn test --coverage
-after_success:
-  - "yarn coveralls"
