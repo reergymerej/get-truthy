@@ -3,7 +3,7 @@ import { left, right } from "./"
 import { SideLabel, Operator, TruthyError } from "./types"
 import { getProblem } from "./visualize"
 
-const verbose = 1
+const verbose = 0
 
 const sides: SideRun[] = [
   ["get left", SideLabel.left, left],
@@ -11,19 +11,19 @@ const sides: SideRun[] = [
 ]
 
 const operators: Operator[] = [
-  // "!=",
-  // "!==",
-  // "+",
-  // "-",
-  // "<",
-  // "<=",
-  // "==",
-  // "===",
-  // ">",
-  // ">=",
-  // "*",
-  // "/",
-  // "%",
+  "!=",
+  "!==",
+  "+",
+  "-",
+  "<",
+  "<=",
+  "==",
+  "===",
+  ">",
+  ">=",
+  "*",
+  "/",
+  "%",
   "**",
 ]
 
@@ -40,10 +40,10 @@ const numbers: ItOption[] = [
       "%": TruthyError.ModuloNumberZero,
     },
   ],
-  // [-1, {}, {}],
-  // [1, {}, {}],
-  // [-100, {}, {}],
-  // [100, {}, {}],
+  [-1, {}, {}],
+  [1, {}, {}],
+  [-100, {}, {}],
+  [100, {}, {}],
 ]
 
 const strings: ItOption[] = [
@@ -54,6 +54,7 @@ const strings: ItOption[] = [
       "*": TruthyError.MultiplyStringWord,
       "/": TruthyError.DivisionString,
       "%": TruthyError.ModuloLeftStringWord,
+      "**": TruthyError.ExpoLeftStringWord,
     },
     {
       "-": TruthyError.SubractionString,
@@ -103,8 +104,8 @@ const numericStrings: ItOption[] = [
 const itOptions: ItOption[] = [
   //
   ...numbers,
-  // ...strings,
-  // ...numericStrings,
+  ...strings,
+  ...numericStrings,
 ]
 
 // --------------------------------------------------------------------------------

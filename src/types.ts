@@ -3,6 +3,7 @@ export enum TruthyError {
   DivisionRightEmptyString = `Any empty string divided by anything is falsy.`,
   DivisionNumberZero = `0 divided by anything is falsy.`,
   DivisionString = `Any string division is falsy.`,
+  ExpoLeftStringWord = `Anything raised to this exponent is falsy.`,
   LessThanStringEmpty = `Nothing can be less than an empty string.`,
   ModuloLeftStringEmpty = `Anything % an empty string is falsy.`,
   ModuloLeftStringWord = `Anything % this string is falsy.`,

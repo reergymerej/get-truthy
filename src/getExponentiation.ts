@@ -2,27 +2,27 @@ import { SideLabel, TruthyError, StringType } from "./types"
 import { error } from "./visualize"
 import { getStringType } from "./util"
 
-const modError = (side: SideLabel) => (basis: any, truthyError: TruthyError) =>
-  new Error(error(side, "%", basis, truthyError))
-const leftError = modError(SideLabel.left)
-const rightError = modError(SideLabel.right)
+const expoError = (side: SideLabel) => (basis: any, truthyError: TruthyError) =>
+  new Error(error(side, "**", basis, truthyError))
+const leftError = expoError(SideLabel.left)
+const rightError = expoError(SideLabel.right)
 
 const getLeftNumber = (basis: any) => {
-  if (basis === 0) {
-    return 1
-  }
-  throw new Error("not implemented")
+  return 1
 }
 
 const getRightNumber = (basis: any) => {
-  if (basis === 0) {
-    return null
-  }
-  throw new Error("not implemented")
+  return null
 }
 
 const getLeftString = (basis: any) => {
   switch (getStringType(basis)) {
+    case StringType.Normal:
+      throw leftError(basis, TruthyError.ExpoLeftStringWord)
+    case StringType.Empty:
+      return 1
+    case StringType.Numeric:
+      return getExponentiation(SideLabel.left, Number(basis))
     default:
       throw new Error(`unhandled case "${getStringType(basis)}"`)
   }
@@ -31,9 +31,9 @@ const getLeftString = (basis: any) => {
 const getRightString = (basis: any) => {
   switch (getStringType(basis)) {
     case StringType.Empty:
-      throw rightError(basis, TruthyError.ModuloRightStringEmpty)
+      return null
     case StringType.Normal:
-      throw rightError(basis, TruthyError.ModuloRightStringWord)
+      return null
     case StringType.Numeric:
       return getExponentiation(SideLabel.right, Number(basis))
     default:
