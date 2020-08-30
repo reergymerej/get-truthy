@@ -14,9 +14,9 @@
   "author": "Jeremy Greer <jex.grizzle@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/reergymerej/start-node-typescript/issues"
+    "url": "https://github.com/reergymerej/get-truthy/issues"
   },
-  "homepage": "https://github.com/reergymerej/start-node-typescript#readme",
+  "homepage": "https://github.com/reergymerej/get-truthy",
   "devDependencies": {
     "@types/jest": "^25.1.2",
     "@types/node": "^13.7.1",
