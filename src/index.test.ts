@@ -26,6 +26,7 @@ const operators: Operator[] = [
   "%",
   "**",
   "&&",
+  // "||",
 ]
 
 const numbers: ItOption[] = [

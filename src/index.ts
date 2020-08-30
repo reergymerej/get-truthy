@@ -8,6 +8,7 @@ import { getModulo } from "./getModulo"
 import { getNotEqual } from "./getNotEqual"
 import { getExponentiation } from "./getExponentiation"
 import { getLogicalAnd } from "./getLogicalAnd"
+import { getLogicalOr } from "./getLogicalOr"
 
 // eslint-disable-next-line complexity
 export const left = (operator: Operator, basis: any): any => {
@@ -38,6 +39,8 @@ export const left = (operator: Operator, basis: any): any => {
       return getExponentiation(SideLabel.left, basis)
     case "&&":
       return getLogicalAnd(SideLabel.left, basis)
+    case "||":
+      return getLogicalOr(SideLabel.left, basis)
     default:
       throw new Error(`unhandled case "${operator}"`)
   }
@@ -58,6 +61,8 @@ export const right = (operator: Operator, basis: any): any => {
       return getModulo(SideLabel.right, basis)
     case "**":
       return getExponentiation(SideLabel.right, basis)
+    case "&&":
+      return getLogicalAnd(SideLabel.right, basis)
     default:
       return left(operator, basis)
   }
