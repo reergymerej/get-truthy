@@ -21,10 +21,24 @@ getTruthy.left('>', 9)
 
 ```js
 import getTruthy from 'get-truthy'
+
 getTruthy.right('>', 9)
 // 8
 ```
 
+### Supported Operators
+
+**Relational**
+   \> < >= <=
+
+**Equality**
+   == === != !==
+
+**Arithmetic**
+   \+ - * / % **
+
+**Logical**
+   && ||
 
 
 ## Development
@@ -33,6 +47,3 @@ getTruthy.right('>', 9)
 * watch - `yarn watch`
 * dev mode - `yarn dev --inspect`
 * lint - `yarn lint`
-
-
-
