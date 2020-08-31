@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "Find a value that will make your expression truthy",
   "main": "out/index.js",
+  "types": "out/index.d.ts",
   "scripts": {
     "dev": "nodemon",
-    "build": "tsc",
-    "watch": "tsc --watch",
+    "lint": "eslint src",
+    "prepublishOnly": "yarn tsc --declaration",
     "test": "jest",
-    "lint": "eslint src"
+    "watch": "tsc --watch"
   },
   "repository": "git@github.com:reergymerej/get-truthy.git",
   "author": "Jeremy Greer <jex.grizzle@gmail.com>",
