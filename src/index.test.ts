@@ -26,7 +26,7 @@ const operators: Operator[] = [
   "%",
   "**",
   "&&",
-  // "||",
+  "||",
 ]
 
 const numbers: ItOption[] = [
@@ -125,28 +125,28 @@ type ExpectedErrors = {
 }
 
 type ItOption = [
-  any, // basis
+  unknown, // basis
   Partial<ExpectedErrors>, // throws when finding left
   Partial<ExpectedErrors>, // throws when finding right
 ]
 
 // Return value safe for eval.
+type Evaluable = number | string | boolean | undefined | object
 // eslint-disable-next-line complexity
-const safe = (value: any): string => {
+const safe = (value: unknown): Evaluable => {
   const type = typeof value
-  let result: string
+  let result: Evaluable
   switch (type) {
     case "number":
-      result = value
+      result = value as number
       break
     case "string":
       result = `"${value}"`
       break
     case "boolean":
-      result = value
+      result = !!value
       break
     case "undefined":
-      result = value
       break
     case "object":
       if (value === null) {
@@ -163,7 +163,7 @@ const getEvalString = (
   label: SideLabel,
   fn: Function,
   operator: string,
-  basis: any,
+  basis: unknown,
 ): string => {
   const value = fn(operator, basis)
   const safeValue = safe(value)
@@ -184,7 +184,7 @@ const getExpectedError = (
 
 const handleExpected = (
   operator: Operator,
-  basis: any,
+  basis: unknown,
   expectedError: TruthyError,
   fn: Function,
 ) => {
@@ -197,7 +197,7 @@ const handleStandard = (
   label: SideLabel,
   fn: Function,
   operator: Operator,
-  basis: any,
+  basis: unknown,
 ) => {
   const evalString = getEvalString(label, fn, operator, basis)
   const problem = getProblem(label, operator, basis)

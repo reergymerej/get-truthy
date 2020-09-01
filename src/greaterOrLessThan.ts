@@ -1,18 +1,18 @@
 import { Operator, SideLabel, TruthyError } from "./types"
 import { error } from "./visualize"
 
-const getNextString = (change: number, basis: any): string => {
+const getNextString = (change: number, basis: string): string => {
   const codePoint = basis.codePointAt(0)
-  const nextString = String.fromCodePoint(codePoint + change)
+  const nextString = String.fromCodePoint((codePoint || 0) + change)
   const result = nextString + basis.substring(1)
   return result
 }
 
 const getString = (change: number) => (
   operator: Operator,
-  basis: any,
+  basis: string,
   side: SideLabel,
-) => {
+): string => {
   if (!basis) {
     if (change < 0) {
       throw new Error(
@@ -27,14 +27,14 @@ const getString = (change: number) => (
 const getGreaterOrLessThan = (change: number) => (
   operator: Operator,
   side: SideLabel,
-  basis: any,
-) => {
+  basis: unknown,
+): number | string => {
   const type = typeof basis
   switch (type) {
     case "number":
-      return basis + change
+      return (basis as number) + change
     case "string":
-      return getString(change)(operator, basis, side)
+      return getString(change)(operator, basis as string, side)
     default:
       throw new Error(`unhandled case "${type}"`)
   }

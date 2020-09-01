@@ -1,4 +1,4 @@
-export const getAddition = (basis: any): any => {
+export const getAddition = (basis: unknown): number | string => {
   const type = typeof basis
   switch (type) {
     case "number":

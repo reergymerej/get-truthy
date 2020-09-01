@@ -1,68 +1,89 @@
 import { SideLabel, Operator } from "./types"
-import { getGreaterThan, getLessThan } from "./greaterOrLessThan"
 import { getAddition } from "./getAddition"
-import { getSubtraction } from "./getSubtraction"
-import { getMultiplication } from "./getMultiplication"
 import { getDivision } from "./getDivision"
-import { getModulo } from "./getModulo"
-import { getNotEqual } from "./getNotEqual"
 import { getExponentiation } from "./getExponentiation"
+import { getGreaterThan, getLessThan } from "./greaterOrLessThan"
 import { getLogicalAnd } from "./getLogicalAnd"
-import { getLogicalOr } from "./getLogicalOr"
+import { getModulo } from "./getModulo"
+import { getMultiplication } from "./getMultiplication"
+import { getNotEqual } from "./getNotEqual"
+import { getSubtraction } from "./getSubtraction"
+
+type ResultLeft =
+  | ReturnType<typeof getAddition>
+  | ReturnType<typeof getDivision>
+  | ReturnType<typeof getExponentiation>
+  | ReturnType<typeof getGreaterThan>
+  | ReturnType<typeof getLessThan>
+  | ReturnType<typeof getLogicalAnd>
+  | ReturnType<typeof getModulo>
+  | ReturnType<typeof getMultiplication>
+  | ReturnType<typeof getNotEqual>
+  | ReturnType<typeof getSubtraction>
+  | unknown
 
 // eslint-disable-next-line complexity
-export const left = (operator: Operator, basis: any): any => {
+export const left = (operator: Operator, basis: unknown): ResultLeft => {
   switch (operator) {
+    case "+":
+      return getAddition(basis)
+    case "/":
+      return getDivision(SideLabel.left, basis)
+    case "**":
+      return getExponentiation(SideLabel.left, basis)
     case ">":
     case ">=":
       return getGreaterThan(operator, SideLabel.left, basis)
     case "<":
     case "<=":
       return getLessThan(operator, SideLabel.left, basis)
+    case "&&":
+      return getLogicalAnd(SideLabel.left, basis)
+    case "||":
+      return 1
+    case "%":
+      return getModulo(SideLabel.left, basis)
+    case "*":
+      return getMultiplication(SideLabel.left, basis)
     case "==":
     case "===":
       return basis
     case "!=":
     case "!==":
       return getNotEqual(basis)
-    case "+":
-      return getAddition(basis)
     case "-":
       return getSubtraction(SideLabel.left, basis)
-    case "*":
-      return getMultiplication(SideLabel.left, basis)
-    case "/":
-      return getDivision(SideLabel.left, basis)
-    case "%":
-      return getModulo(SideLabel.left, basis)
-    case "**":
-      return getExponentiation(SideLabel.left, basis)
-    case "&&":
-      return getLogicalAnd(SideLabel.left, basis)
-    case "||":
-      return getLogicalOr(SideLabel.left, basis)
     default:
       throw new Error(`unhandled case "${operator}"`)
   }
 }
 
+type ResultRight =
+  | ReturnType<typeof getDivision>
+  | ReturnType<typeof getExponentiation>
+  | ReturnType<typeof getGreaterThan>
+  | ReturnType<typeof getLessThan>
+  | ReturnType<typeof getLogicalAnd>
+  | ReturnType<typeof getModulo>
+  | ReturnType<typeof left>
+
 // eslint-disable-next-line complexity
-export const right = (operator: Operator, basis: any): any => {
+export const right = (operator: Operator, basis: unknown): ResultRight => {
   switch (operator) {
-    case ">":
-    case ">=":
-      return getLessThan("<", SideLabel.right, basis)
+    case "/":
+      return getDivision(SideLabel.right, basis)
+    case "**":
+      return getExponentiation(SideLabel.right, basis)
     case "<":
     case "<=":
       return getGreaterThan(">", SideLabel.right, basis)
-    case "/":
-      return getDivision(SideLabel.right, basis)
-    case "%":
-      return getModulo(SideLabel.right, basis)
-    case "**":
-      return getExponentiation(SideLabel.right, basis)
+    case ">":
+    case ">=":
+      return getLessThan("<", SideLabel.right, basis)
     case "&&":
       return getLogicalAnd(SideLabel.right, basis)
+    case "%":
+      return getModulo(SideLabel.right, basis)
     default:
       return left(operator, basis)
   }

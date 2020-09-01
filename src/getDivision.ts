@@ -3,13 +3,13 @@ import { error } from "./visualize"
 import { getStringType } from "./util"
 
 const divisionError = (side: SideLabel) => (
-  basis: any,
+  basis: unknown,
   truthyError: TruthyError,
 ) => new Error(error(side, "/", basis, truthyError))
 const leftError = divisionError(SideLabel.left)
 const rightError = divisionError(SideLabel.right)
 
-const getNumber = (side: SideLabel, basis: any) => {
+const solveForNumber = (side: SideLabel, basis: number): number => {
   if (side === SideLabel.left) {
     return basis === 0
       ? // anything / 0 == Infinity (truthy)
@@ -23,7 +23,7 @@ const getNumber = (side: SideLabel, basis: any) => {
   }
 }
 
-const getLeftString = (basis: any) => {
+const solveForLeftString = (basis: string): ReturnType<typeof getDivision> => {
   switch (getStringType(basis)) {
     case StringType.Empty:
       throw leftError(basis, TruthyError.DivisionLeftEmptyString)
@@ -36,7 +36,7 @@ const getLeftString = (basis: any) => {
   }
 }
 
-const getRightString = (basis: any) => {
+const solveForRightString = (basis: string): ReturnType<typeof getDivision> => {
   switch (getStringType(basis)) {
     case StringType.Empty:
       throw rightError(basis, TruthyError.DivisionRightEmptyString)
@@ -49,20 +49,23 @@ const getRightString = (basis: any) => {
   }
 }
 
-const getString = (side: SideLabel, basis: any) =>
+const solveForString = (side: SideLabel, basis: string): string | number =>
   side === SideLabel.left
     ? //
-      getLeftString(basis)
-    : getRightString(basis)
+      solveForLeftString(basis)
+    : solveForRightString(basis)
 
-export const getDivision = (side: SideLabel, basis: any): any => {
+export const getDivision = (
+  side: SideLabel,
+  basis: unknown,
+): number | string => {
   const type = typeof basis
 
   switch (type) {
     case "number":
-      return getNumber(side, basis)
+      return solveForNumber(side, basis as number)
     case "string":
-      return getString(side, basis)
+      return solveForString(side, basis as string)
     default:
       throw new Error(`unhandled case "${type}"`)
   }

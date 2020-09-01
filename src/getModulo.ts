@@ -2,26 +2,28 @@ import { SideLabel, TruthyError, StringType } from "./types"
 import { error } from "./visualize"
 import { getStringType } from "./util"
 
-const modError = (side: SideLabel) => (basis: any, truthyError: TruthyError) =>
-  new Error(error(side, "%", basis, truthyError))
+const modError = (side: SideLabel) => (
+  basis: unknown,
+  truthyError: TruthyError,
+) => new Error(error(side, "%", basis, truthyError))
 const leftError = modError(SideLabel.left)
 const rightError = modError(SideLabel.right)
 
-const getLeftNumber = (basis: any) => {
+const getLeftNumber = (basis: number): number => {
   if (basis === 0) {
     throw leftError(basis, TruthyError.ModuloNumberZero)
   }
   return basis * 0.5
 }
 
-const getRightNumber = (basis: any) => {
+const getRightNumber = (basis: number): number => {
   if (basis === 0) {
     throw rightError(basis, TruthyError.ModuloNumberZero)
   }
   return basis * 2
 }
 
-const getLeftString = (basis: any) => {
+const getLeftString = (basis: string) => {
   switch (getStringType(basis)) {
     case StringType.Empty:
       throw rightError(basis, TruthyError.ModuloLeftStringEmpty)
@@ -34,7 +36,7 @@ const getLeftString = (basis: any) => {
   }
 }
 
-const getRightString = (basis: any) => {
+const getRightString = (basis: string) => {
   switch (getStringType(basis)) {
     case StringType.Empty:
       throw rightError(basis, TruthyError.ModuloRightStringEmpty)
@@ -47,30 +49,30 @@ const getRightString = (basis: any) => {
   }
 }
 
-const getLeft = (basis: any) => {
+const getLeft = (basis: unknown) => {
   const type = typeof basis
   switch (type) {
     case "number":
-      return getLeftNumber(basis)
+      return getLeftNumber(basis as number)
     case "string":
-      return getLeftString(basis)
+      return getLeftString(basis as string)
     default:
       throw new Error(`unhandled case "${type}"`)
   }
 }
-const getRight = (basis: any) => {
+const getRight = (basis: unknown) => {
   const type = typeof basis
   switch (type) {
     case "number":
-      return getRightNumber(basis)
+      return getRightNumber(basis as number)
     case "string":
-      return getRightString(basis)
+      return getRightString(basis as string)
     default:
       throw new Error(`unhandled case "${type}"`)
   }
 }
 
-export const getModulo = (side: SideLabel, basis: any): any =>
+export const getModulo = (side: SideLabel, basis: unknown): unknown =>
   side === SideLabel.left
     ? getLeft(basis) //
     : getRight(basis)
