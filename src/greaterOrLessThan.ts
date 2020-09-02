@@ -1,9 +1,17 @@
 import { Operator, SideLabel, TruthyError } from "./types"
 import { error } from "./visualize"
+import { getType } from "./util"
+
+export const getCodePoint = (basis: string): number => {
+  if (!basis) {
+    throw new Error(`Unable to determine next when the input string is empty.`)
+  }
+  return basis.codePointAt(0) as number
+}
 
 const getNextString = (change: number, basis: string): string => {
-  const codePoint = basis.codePointAt(0)
-  const nextString = String.fromCodePoint((codePoint || 0) + change)
+  const codePoint = getCodePoint(basis)
+  const nextString = String.fromCodePoint(codePoint + change)
   const result = nextString + basis.substring(1)
   return result
 }
@@ -29,14 +37,14 @@ const getGreaterOrLessThan = (change: number) => (
   side: SideLabel,
   basis: unknown,
 ): number | string => {
-  const type = typeof basis
+  const type = getType(basis)
   switch (type) {
     case "number":
       return (basis as number) + change
     case "string":
       return getString(change)(operator, basis as string, side)
-    default:
-      throw new Error(`unhandled case "${type}"`)
+    case "symbol":
+      throw error(side, operator, basis, TruthyError.GreaterThanLessThanSymbol)
   }
 }
 

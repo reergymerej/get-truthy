@@ -4,9 +4,12 @@ const printBasis = (basis: unknown) => {
   const type = typeof basis
   switch (type) {
     case "string":
+    case "bigint":
       return `'${basis}'`
+    case "symbol":
+      return String(basis)
     default:
-      return basis
+      return JSON.stringify(basis)
   }
 }
 

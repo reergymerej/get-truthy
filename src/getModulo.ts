@@ -1,6 +1,6 @@
 import { SideLabel, TruthyError, StringType } from "./types"
 import { error } from "./visualize"
-import { getStringType } from "./util"
+import { getStringType, getType } from "./util"
 
 const modError = (side: SideLabel) => (
   basis: unknown,
@@ -31,8 +31,6 @@ const getLeftString = (basis: string) => {
       throw rightError(basis, TruthyError.ModuloLeftStringWord)
     case StringType.Numeric:
       return getModulo(SideLabel.left, Number(basis))
-    default:
-      throw new Error(`unhandled case "${getStringType(basis)}"`)
   }
 }
 
@@ -44,29 +42,31 @@ const getRightString = (basis: string) => {
       throw rightError(basis, TruthyError.ModuloRightStringWord)
     case StringType.Numeric:
       return getModulo(SideLabel.right, Number(basis))
-    default:
-      throw new Error(`unhandled case "${getStringType(basis)}"`)
   }
 }
 
 const getLeft = (basis: unknown) => {
-  const type = typeof basis
+  const type = getType(basis)
   switch (type) {
     case "number":
       return getLeftNumber(basis as number)
     case "string":
       return getLeftString(basis as string)
+    case "symbol":
+      throw error(SideLabel.left, "%", basis, TruthyError.ModSymbol)
     default:
       throw new Error(`unhandled case "${type}"`)
   }
 }
 const getRight = (basis: unknown) => {
-  const type = typeof basis
+  const type = getType(basis)
   switch (type) {
     case "number":
       return getRightNumber(basis as number)
     case "string":
       return getRightString(basis as string)
+    case "symbol":
+      throw error(SideLabel.right, "%", basis, TruthyError.ModSymbol)
     default:
       throw new Error(`unhandled case "${type}"`)
   }

@@ -1,6 +1,6 @@
 import { SideLabel, TruthyError, StringType } from "./types"
 import { error } from "./visualize"
-import { getStringType } from "./util"
+import { getStringType, getType } from "./util"
 
 const solveForNumber = (side: SideLabel, basis: number): number => {
   if (basis === 0) {
@@ -20,8 +20,6 @@ const solveForString = (
       throw new Error(error(side, "*", basis, TruthyError.MultiplyStringWord))
     case StringType.Numeric:
       return getMultiplication(side, Number(basis))
-    default:
-      throw new Error(`unhandled case "${getStringType(basis)}"`)
   }
 }
 
@@ -29,13 +27,13 @@ export const getMultiplication = (
   side: SideLabel,
   basis: unknown,
 ): number | string => {
-  const type = typeof basis
+  const type = getType(basis)
   switch (type) {
     case "number":
       return solveForNumber(side, basis as number)
     case "string":
       return solveForString(side, basis as string)
-    default:
-      throw new Error(`unhandled case "${type}"`)
+    case "symbol":
+      throw error(side, "*", basis, TruthyError.MultiplySymbol)
   }
 }

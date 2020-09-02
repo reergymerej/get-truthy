@@ -11,6 +11,7 @@ module.exports = {
     "prettier",
   ],
   rules: {
+    '@typescript-eslint/no-empty-function': 0,
     "@typescript-eslint/no-explicit-any": 2,
     "@typescript-eslint/explicit-module-boundary-types": 0,
     complexity: [2, 4],

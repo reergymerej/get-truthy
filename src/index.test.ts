@@ -48,6 +48,7 @@ const numbers: ItOption[] = [
   [1, {}, {}],
   [-100, {}, {}],
   [100, {}, {}],
+  // [BigInt(9007199254740991), {}, {}],
 ]
 
 const strings: ItOption[] = [
@@ -107,11 +108,48 @@ const numericStrings: ItOption[] = [
   ],
 ]
 
+const junk: ItOption[] = [
+  // [null, {}, {}],
+  // [{}, {}, {}],
+  // [() => {}, {}, {}],
+  // [false, {}, {}],
+  // [true, {}, {}],
+  // [undefined, {}, {}],
+  [
+    Symbol("of love"),
+    {
+      "+": TruthyError.AdditionSymbol,
+      "-": TruthyError.SubtractionSymbol,
+      "<": TruthyError.GreaterThanLessThanSymbol,
+      "<=": TruthyError.GreaterThanLessThanSymbol,
+      ">": TruthyError.GreaterThanLessThanSymbol,
+      ">=": TruthyError.GreaterThanLessThanSymbol,
+      "*": TruthyError.MultiplySymbol,
+      "/": TruthyError.DivisionSymbol,
+      "%": TruthyError.ModSymbol,
+      "**": TruthyError.ExpoSymbol,
+    },
+    {
+      "+": TruthyError.AdditionSymbol,
+      "-": TruthyError.SubtractionSymbol,
+      "<": TruthyError.GreaterThanLessThanSymbol,
+      "<=": TruthyError.GreaterThanLessThanSymbol,
+      ">": TruthyError.GreaterThanLessThanSymbol,
+      ">=": TruthyError.GreaterThanLessThanSymbol,
+      "*": TruthyError.MultiplySymbol,
+      "/": TruthyError.DivisionSymbol,
+      "%": TruthyError.ModSymbol,
+      "**": TruthyError.ExpoSymbol,
+    },
+  ],
+]
+
 const itOptions: ItOption[] = [
   //
   ...numbers,
   ...strings,
   ...numericStrings,
+  ...junk,
 ]
 
 // --------------------------------------------------------------------------------
@@ -148,11 +186,21 @@ const safe = (value: unknown): Evaluable => {
       break
     case "undefined":
       break
+    case "bigint":
+      result = String(value)
+      break
+    case "symbol":
+      // stringifying the symbol loses the ", just use a dang number
+      return `(${String(Symbol(1))})`
+    case "function":
+      result = String(value)
+      break
     case "object":
       if (value === null) {
         return null
       }
-    // falls through
+      result = JSON.stringify(value)
+      break
     default:
       throw new Error(`unhandled case "${type}"`)
   }
@@ -193,6 +241,7 @@ const handleExpected = (
   }).toThrow(expectedError)
 }
 
+// eslint-disable-next-line max-statements
 const handleStandard = (
   label: SideLabel,
   fn: Function,
@@ -200,9 +249,14 @@ const handleStandard = (
   basis: unknown,
 ) => {
   const evalString = getEvalString(label, fn, operator, basis)
-  const problem = getProblem(label, operator, basis)
   if (verbose) {
+    const problem = getProblem(label, operator, basis)
     console.log(`${problem}\n${evalString}`)
+  }
+  if (typeof basis === "symbol") {
+    // Even identical symbols aren't the same.  This is a special case where we
+    // can't use eval to test.
+    return
   }
   expect(eval(evalString)).toBeTruthy()
 }

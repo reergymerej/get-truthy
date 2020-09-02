@@ -1,6 +1,6 @@
 import { SideLabel, TruthyError, StringType } from "./types"
 import { error } from "./visualize"
-import { getStringType } from "./util"
+import { getStringType, getType } from "./util"
 
 const expoError = (side: SideLabel) => (
   basis: string,
@@ -18,21 +18,28 @@ const solveForStringOnLeft = (
       return 1
     case StringType.Numeric:
       return getExponentiation(SideLabel.left, Number(basis))
-    default:
-      throw new Error(`unhandled case "${getStringType(basis)}"`)
   }
 }
 
 const solveForLeft = (basis: unknown): number | null => {
-  const type = typeof basis
+  const type = getType(basis)
   switch (type) {
     case "number":
       return 1
     case "string":
       return solveForStringOnLeft(basis as string)
-    default:
-      throw new Error(`unhandled case "${type}"`)
+    case "symbol":
+      throw error(SideLabel.left, "**", basis, TruthyError.ExpoSymbol)
   }
+}
+
+const solveForRight = (basis: unknown): null => {
+  const type = getType(basis)
+  switch (type) {
+    case "symbol":
+      throw error(SideLabel.right, "**", basis, TruthyError.ExpoSymbol)
+  }
+  return null
 }
 
 export const getExponentiation = (
@@ -41,4 +48,4 @@ export const getExponentiation = (
 ): ReturnType<typeof solveForLeft> | null =>
   side === SideLabel.left
     ? solveForLeft(basis) //
-    : null
+    : solveForRight(basis)

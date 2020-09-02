@@ -26,7 +26,7 @@ type ResultLeft =
 export const left = (operator: Operator, basis: unknown): ResultLeft => {
   switch (operator) {
     case "+":
-      return getAddition(basis)
+      return getAddition(SideLabel.left, basis)
     case "/":
       return getDivision(SideLabel.left, basis)
     case "**":
@@ -53,8 +53,6 @@ export const left = (operator: Operator, basis: unknown): ResultLeft => {
       return getNotEqual(basis)
     case "-":
       return getSubtraction(SideLabel.left, basis)
-    default:
-      throw new Error(`unhandled case "${operator}"`)
   }
 }
 
