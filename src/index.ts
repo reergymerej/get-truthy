@@ -1,4 +1,4 @@
-import { SideLabel, Operator } from "./types"
+import { SideLabel, Operator, TruthyError } from "./types"
 import { getAddition } from "./getAddition"
 import { getDivision } from "./getDivision"
 import { getExponentiation } from "./getExponentiation"
@@ -8,6 +8,8 @@ import { getModulo } from "./getModulo"
 import { getMultiplication } from "./getMultiplication"
 import { getNotEqual } from "./getNotEqual"
 import { getSubtraction } from "./getSubtraction"
+import { getType } from "./util"
+import { error } from "./visualize"
 
 type ResultLeft =
   | ReturnType<typeof getAddition>
@@ -45,8 +47,16 @@ export const left = (operator: Operator, basis: unknown): ResultLeft => {
       return getModulo(SideLabel.left, basis)
     case "*":
       return getMultiplication(SideLabel.left, basis)
-    case "==":
+    case "==": {
+      if (getType(basis) === "object") {
+        return "[object Object]"
+      }
+      return basis
+    }
     case "===":
+      if (getType(basis) === "object") {
+        throw error(SideLabel.left, "===", basis, TruthyError.IdentityObject)
+      }
       return basis
     case "!=":
     case "!==":
@@ -82,6 +92,11 @@ export const right = (operator: Operator, basis: unknown): ResultRight => {
       return getLogicalAnd(SideLabel.right, basis)
     case "%":
       return getModulo(SideLabel.right, basis)
+    case "===":
+      if (getType(basis) === "object") {
+        throw error(SideLabel.right, "===", basis, TruthyError.IdentityObject)
+      }
+      return basis
     default:
       return left(operator, basis)
   }

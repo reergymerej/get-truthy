@@ -132,13 +132,18 @@ const junk: ItOption[] = [
       "%": TruthyError.ModRightNull,
     },
   ],
-  // [
-  //   {},
-  //   {
-  //     "**": TruthyError.ExpoObjectLeft,
-  //   },
-  //   {},
-  // ],
+  [
+    {},
+    {
+      "**": TruthyError.ExpoObjectLeft,
+      "%": TruthyError.ModObjectLeft,
+      "===": TruthyError.IdentityObject,
+    },
+    {
+      "%": TruthyError.ModObjectRight,
+      "===": TruthyError.IdentityObject,
+    },
+  ],
   // [() => {}, {}, {}],
   // [false, {}, {}],
   // [true, {}, {}],

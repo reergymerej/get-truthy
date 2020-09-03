@@ -72,6 +72,8 @@ const getLeft = (basis: unknown) => {
       return getLeftString(basis as string)
     case "symbol":
       throw error(SideLabel.left, "%", basis, TruthyError.ModSymbol)
+    case "object":
+      throw error(SideLabel.left, "%", basis, TruthyError.ModObjectLeft)
     case "null":
       throw error(SideLabel.left, "%", basis, TruthyError.ModLeftNull)
     default:
@@ -92,6 +94,8 @@ const getRight = (basis: unknown) => {
       throw error(SideLabel.right, "%", basis, TruthyError.ModSymbol)
     case "null":
       throw error(SideLabel.right, "%", basis, TruthyError.ModRightNull)
+    case "object":
+      throw error(SideLabel.left, "%", basis, TruthyError.ModObjectRight)
     default:
       throw new Error(`unhandled case "${type}"`)
   }
