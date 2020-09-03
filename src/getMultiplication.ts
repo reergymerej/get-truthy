@@ -2,6 +2,13 @@ import { SideLabel, TruthyError, StringType } from "./types"
 import { error } from "./visualize"
 import { getStringType, getType } from "./util"
 
+const solveForBigInt = (side: SideLabel, basis: bigint): bigint => {
+  if (basis === BigInt(0)) {
+    throw new Error(error(side, "*", basis, TruthyError.MultiplyBigZero))
+  }
+  return basis
+}
+
 const solveForNumber = (side: SideLabel, basis: number): number => {
   if (basis === 0) {
     throw new Error(error(side, "*", basis, TruthyError.MultiplyZero))
@@ -23,12 +30,15 @@ const solveForString = (
   }
 }
 
+// eslint-disable-next-line complexity
 export const getMultiplication = (
   side: SideLabel,
   basis: unknown,
-): number | string => {
+): number | string | bigint => {
   const type = getType(basis)
   switch (type) {
+    case "bigint":
+      return solveForBigInt(side, basis as bigint)
     case "number":
       return solveForNumber(side, basis as number)
     case "string":

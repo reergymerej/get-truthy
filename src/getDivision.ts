@@ -9,11 +9,25 @@ const divisionError = (side: SideLabel) => (
 const leftError = divisionError(SideLabel.left)
 const rightError = divisionError(SideLabel.right)
 
+const solveForBig0 = (side: SideLabel, basis: bigint): bigint => {
+  if (side === SideLabel.left) {
+    throw error(side, "/", basis, TruthyError.DivisionLeftBigZero)
+  } else {
+    throw error(side, "/", basis, TruthyError.DivisionRightBigZero)
+  }
+}
+
+const solveForBigInt = (side: SideLabel, basis: bigint): bigint => {
+  if (basis === BigInt(0)) {
+    return solveForBig0(side, basis)
+  }
+  return basis
+}
+
 const solveForNumber = (side: SideLabel, basis: number): number => {
   if (side === SideLabel.left) {
     return basis === 0
-      ? // anything / 0 == Infinity (truthy)
-        1
+      ? 1 //
       : basis
   } else {
     if (basis === 0) {
@@ -57,6 +71,8 @@ export const getDivision = (
 ): number | string => {
   const type = getType(basis)
   switch (type) {
+    case "bigint":
+      return solveForBigInt(side, basis as bigint)
     case "number":
       return solveForNumber(side, basis as number)
     case "string":

@@ -32,13 +32,16 @@ const getString = (change: number) => (
   return getNextString(change, basis)
 }
 
+// eslint-disable-next-line complexity
 const getGreaterOrLessThan = (change: number) => (
   operator: Operator,
   side: SideLabel,
   basis: unknown,
-): number | string => {
+): number | string | bigint => {
   const type = getType(basis)
   switch (type) {
+    case "bigint":
+      return (basis as bigint) + BigInt(change)
     case "number":
       return (basis as number) + change
     case "string":

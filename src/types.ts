@@ -1,5 +1,8 @@
 export enum TruthyError {
+  ModLeftNull = `Anything % null is falsy.`,
+  ModRightNull = `null % anything is falsy.`,
   AdditionSymbol = `Any addition with a Symbol always throws.`,
+  ExpoObjectLeft = `Anything ** {} is NaN.`,
   MultiplySymbol = `Any multiplication with a Symbol always throws.`,
   ModSymbol = `Any mod with a Symbol always throws.`,
   ExpoSymbol = `Any exponentiation with a Symbol always throws.`,
@@ -21,6 +24,12 @@ export enum TruthyError {
   MultiplyEmptyString = `Multiplying an empty string is 0.`,
   MultiplyStringWord = `Multiplying any non-numeric string is falsy`,
   MultiplyZero = `Anything multiplied by 0 is falsy.`,
+  MultiplyBigZero = `Anything multiplied by 0n is falsy.`,
+  DivisionLeftBigZero = `Anything divided by 0n will throw.`,
+  ModLeftBigZero = `Anything % 0n will throw.`,
+  ModRightBigZero = `0n % anything is 0n.`,
+  ExpoRightBigZero = `0n ** anything is 0n.`,
+  DivisionRightBigZero = `0n / anything is always 0n.`,
   SubractionString = `Subtraction with this string is always falsy.`,
   SubtractionSymbol = `Any subtractions with a Symbol always throws.`,
 }

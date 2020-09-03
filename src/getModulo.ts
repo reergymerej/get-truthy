@@ -9,11 +9,26 @@ const modError = (side: SideLabel) => (
 const leftError = modError(SideLabel.left)
 const rightError = modError(SideLabel.right)
 
+const getLeftBigInt = (basis: bigint): bigint => {
+  if (basis === BigInt(0)) {
+    throw error(SideLabel.left, "%", basis, TruthyError.ModLeftBigZero)
+  }
+  // Will fail if basis < 2n
+  return basis / BigInt(2)
+}
+
 const getLeftNumber = (basis: number): number => {
   if (basis === 0) {
     throw leftError(basis, TruthyError.ModuloNumberZero)
   }
   return basis * 0.5
+}
+
+const getRightBigInt = (basis: bigint): bigint => {
+  if (basis === BigInt(0)) {
+    throw error(SideLabel.right, "%", basis, TruthyError.ModRightBigZero)
+  }
+  return basis * BigInt(2)
 }
 
 const getRightNumber = (basis: number): number => {
@@ -45,28 +60,38 @@ const getRightString = (basis: string) => {
   }
 }
 
+// eslint-disable-next-line complexity
 const getLeft = (basis: unknown) => {
   const type = getType(basis)
   switch (type) {
+    case "bigint":
+      return getLeftBigInt(basis as bigint)
     case "number":
       return getLeftNumber(basis as number)
     case "string":
       return getLeftString(basis as string)
     case "symbol":
       throw error(SideLabel.left, "%", basis, TruthyError.ModSymbol)
+    case "null":
+      throw error(SideLabel.left, "%", basis, TruthyError.ModLeftNull)
     default:
       throw new Error(`unhandled case "${type}"`)
   }
 }
+// eslint-disable-next-line complexity
 const getRight = (basis: unknown) => {
   const type = getType(basis)
   switch (type) {
+    case "bigint":
+      return getRightBigInt(basis as bigint)
     case "number":
       return getRightNumber(basis as number)
     case "string":
       return getRightString(basis as string)
     case "symbol":
       throw error(SideLabel.right, "%", basis, TruthyError.ModSymbol)
+    case "null":
+      throw error(SideLabel.right, "%", basis, TruthyError.ModRightNull)
     default:
       throw new Error(`unhandled case "${type}"`)
   }

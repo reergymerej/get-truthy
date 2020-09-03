@@ -1,13 +1,15 @@
 import { SideLabel, Operator, TruthyError } from "./types"
 
+// eslint-disable-next-line complexity
 const printBasis = (basis: unknown) => {
   const type = typeof basis
   switch (type) {
     case "string":
-    case "bigint":
       return `'${basis}'`
     case "symbol":
       return String(basis)
+    case "bigint":
+      return `BigInt(${String(basis)})`
     default:
       return JSON.stringify(basis)
   }

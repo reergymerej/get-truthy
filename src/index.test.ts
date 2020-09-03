@@ -13,19 +13,19 @@ const sides: SideRun[] = [
 const operators: Operator[] = [
   "!=",
   "!==",
-  "+",
-  "-",
-  "<",
-  "<=",
+  // "+",
+  // "-",
+  // "<",
+  // "<=",
   "==",
   "===",
-  ">",
-  ">=",
-  "*",
-  "/",
+  // ">",
+  // ">=",
+  // "*",
+  // "/",
   "%",
   "**",
-  "&&",
+  // "&&",
   "||",
 ]
 
@@ -48,7 +48,21 @@ const numbers: ItOption[] = [
   [1, {}, {}],
   [-100, {}, {}],
   [100, {}, {}],
-  // [BigInt(9007199254740991), {}, {}],
+  [
+    BigInt(0),
+    {
+      "*": TruthyError.MultiplyBigZero,
+      "/": TruthyError.DivisionLeftBigZero,
+      "%": TruthyError.ModLeftBigZero,
+    },
+    {
+      "*": TruthyError.MultiplyBigZero,
+      "/": TruthyError.DivisionRightBigZero,
+      "%": TruthyError.ModRightBigZero,
+      "**": TruthyError.ExpoRightBigZero,
+    },
+  ],
+  [BigInt(9007199254740991), {}, {}],
 ]
 
 const strings: ItOption[] = [
@@ -109,8 +123,22 @@ const numericStrings: ItOption[] = [
 ]
 
 const junk: ItOption[] = [
-  // [null, {}, {}],
-  // [{}, {}, {}],
+  [
+    null,
+    {
+      "%": TruthyError.ModLeftNull,
+    },
+    {
+      "%": TruthyError.ModRightNull,
+    },
+  ],
+  // [
+  //   {},
+  //   {
+  //     "**": TruthyError.ExpoObjectLeft,
+  //   },
+  //   {},
+  // ],
   // [() => {}, {}, {}],
   // [false, {}, {}],
   // [true, {}, {}],
@@ -187,7 +215,7 @@ const safe = (value: unknown): Evaluable => {
     case "undefined":
       break
     case "bigint":
-      result = String(value)
+      result = `BigInt(${String(value)})`
       break
     case "symbol":
       // stringifying the symbol loses the ", just use a dang number

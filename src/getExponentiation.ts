@@ -21,23 +21,33 @@ const solveForStringOnLeft = (
   }
 }
 
-const solveForLeft = (basis: unknown): number | null => {
+// eslint-disable-next-line complexity
+const solveForLeft = (basis: unknown): number | null | bigint => {
   const type = getType(basis)
   switch (type) {
     case "number":
       return 1
     case "string":
       return solveForStringOnLeft(basis as string)
+    case "bigint":
+      return BigInt(1)
     case "symbol":
       throw error(SideLabel.left, "**", basis, TruthyError.ExpoSymbol)
+    case "object":
+      throw error(SideLabel.left, "**", basis, TruthyError.ExpoObjectLeft)
   }
 }
 
-const solveForRight = (basis: unknown): null => {
+const solveForRight = (basis: unknown): bigint | null => {
   const type = getType(basis)
   switch (type) {
     case "symbol":
       throw error(SideLabel.right, "**", basis, TruthyError.ExpoSymbol)
+    case "bigint":
+      if (basis) {
+        return BigInt(0)
+      }
+      throw error(SideLabel.right, "**", basis, TruthyError.ExpoRightBigZero)
   }
   return null
 }
