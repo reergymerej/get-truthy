@@ -10,7 +10,7 @@ const operators: Operator[] = [
   "!==",
   "+",
   "-",
-  // "<",
+  "<",
   // "<=",
   "==",
   "===",
@@ -133,6 +133,7 @@ const junk: ItOption[] = [
       "**": TruthyError.Expo,
       "/": TruthyError.Division,
       "*": TruthyError.Multiplication,
+      "<": TruthyError.AlwaysFalsy,
     },
     {
       "%": TruthyError.ModRightNull,
@@ -184,6 +185,7 @@ const junk: ItOption[] = [
       "**": TruthyError.Expo,
       "/": TruthyError.Division,
       "*": TruthyError.Multiplication,
+      "<": TruthyError.AlwaysFalsy,
     },
     {
       "%": TruthyError.ModBoolean,
@@ -213,6 +215,7 @@ const junk: ItOption[] = [
       "**": TruthyError.Expo,
       "/": TruthyError.Division,
       "*": TruthyError.Multiplication,
+      "<": TruthyError.AlwaysFalsy,
     },
     {
       "%": TruthyError.ModUndefined,
@@ -220,6 +223,7 @@ const junk: ItOption[] = [
       "-": TruthyError.Subtraction,
       "/": TruthyError.Division,
       "*": TruthyError.Multiplication,
+      "<": TruthyError.AlwaysFalsy,
     },
   ],
   [

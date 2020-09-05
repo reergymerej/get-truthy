@@ -32,6 +32,31 @@ const getString = (change: number) => (
   return getNextString(change, basis)
 }
 
+const solveForNull = (
+  side: SideLabel,
+  operator: Operator,
+  basis: unknown,
+): number => {
+  if (side === SideLabel.right) {
+    return 1
+  }
+  throw error(side, operator, basis, TruthyError.AlwaysFalsy)
+}
+
+const solveForBoolean = (
+  side: SideLabel,
+  operator: Operator,
+  basis: unknown,
+): number => {
+  if (basis === true) {
+    return side === SideLabel.right ? 2 : 0
+  }
+  if (side === SideLabel.right) {
+    return 1
+  }
+  throw error(side, operator, basis, TruthyError.AlwaysFalsy)
+}
+
 // eslint-disable-next-line complexity
 const getGreaterOrLessThan = (change: number) => (
   operator: Operator,
@@ -44,10 +69,19 @@ const getGreaterOrLessThan = (change: number) => (
       return (basis as bigint) + BigInt(change)
     case "number":
       return (basis as number) + change
+    case "null":
+      return solveForNull(side, operator, basis)
+    case "object":
+    case "function":
+      return getGreaterOrLessThan(change)(operator, side, String(basis))
     case "string":
       return getString(change)(operator, basis as string, side)
     case "symbol":
       throw error(side, operator, basis, TruthyError.GreaterThanLessThanSymbol)
+    case "boolean":
+      return solveForBoolean(side, operator, basis)
+    case "undefined":
+      throw error(side, operator, basis, TruthyError.AlwaysFalsy)
   }
 }
 

@@ -1,4 +1,5 @@
 export enum TruthyError {
+  AlwaysFalsy = `Always falsy`,
   Multiplication = `Always falsy`,
   Division = `Always falsy`,
   Expo = `Always falsy`,
