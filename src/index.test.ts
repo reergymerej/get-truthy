@@ -5,16 +5,11 @@ import { getProblem } from "./visualize"
 
 const verbose = 0
 
-const sides: SideRun[] = [
-  ["get left", SideLabel.left, left],
-  ["get right", SideLabel.right, right],
-]
-
 const operators: Operator[] = [
   "!=",
   "!==",
-  // "+",
-  // "-",
+  "+",
+  "-",
   // "<",
   // "<=",
   "==",
@@ -22,11 +17,16 @@ const operators: Operator[] = [
   // ">",
   // ">=",
   // "*",
-  // "/",
+  "/",
   "%",
   "**",
-  // "&&",
+  "&&",
   "||",
+]
+
+const sides: SideRun[] = [
+  ["get left", SideLabel.left, left],
+  ["get right", SideLabel.right, right],
 ]
 
 const numbers: ItOption[] = [
@@ -54,12 +54,14 @@ const numbers: ItOption[] = [
       "*": TruthyError.MultiplyBigZero,
       "/": TruthyError.DivisionLeftBigZero,
       "%": TruthyError.ModLeftBigZero,
+      "&&": TruthyError.LogicalAnd,
     },
     {
       "*": TruthyError.MultiplyBigZero,
       "/": TruthyError.DivisionRightBigZero,
       "%": TruthyError.ModRightBigZero,
       "**": TruthyError.ExpoRightBigZero,
+      "&&": TruthyError.LogicalAnd,
     },
   ],
   [BigInt(9007199254740991), {}, {}],
@@ -127,9 +129,14 @@ const junk: ItOption[] = [
     null,
     {
       "%": TruthyError.ModLeftNull,
+      "&&": TruthyError.LogicalAnd,
+      "**": TruthyError.Expo,
+      "/": TruthyError.Division,
     },
     {
       "%": TruthyError.ModRightNull,
+      "&&": TruthyError.LogicalAnd,
+      "/": TruthyError.Division,
     },
   ],
   [
@@ -137,17 +144,74 @@ const junk: ItOption[] = [
     {
       "**": TruthyError.ExpoObjectLeft,
       "%": TruthyError.ModObjectLeft,
-      "===": TruthyError.IdentityObject,
+      "-": TruthyError.Subtraction,
+      "/": TruthyError.Division,
     },
     {
       "%": TruthyError.ModObjectRight,
-      "===": TruthyError.IdentityObject,
+      "-": TruthyError.Subtraction,
+      "/": TruthyError.Division,
     },
   ],
-  // [() => {}, {}, {}],
-  // [false, {}, {}],
-  // [true, {}, {}],
-  // [undefined, {}, {}],
+  [
+    () => {},
+    {
+      "==": TruthyError.EqualityFunction,
+      "%": TruthyError.ModFunction,
+      "-": TruthyError.Subtraction,
+      "**": TruthyError.Expo,
+      "/": TruthyError.Division,
+    },
+    {
+      "==": TruthyError.EqualityFunction,
+      "%": TruthyError.ModFunction,
+      "-": TruthyError.Subtraction,
+      "/": TruthyError.Division,
+    },
+  ],
+  [
+    false,
+    {
+      "%": TruthyError.ModBoolean,
+      "&&": TruthyError.LogicalAnd,
+      "-": TruthyError.Subtraction,
+      "**": TruthyError.Expo,
+      "/": TruthyError.Division,
+    },
+    {
+      "%": TruthyError.ModBoolean,
+      "&&": TruthyError.LogicalAnd,
+      "-": TruthyError.Subtraction,
+      "/": TruthyError.Division,
+    },
+  ],
+  [
+    true,
+    {
+      "%": TruthyError.ModBoolean,
+      "-": TruthyError.Subtraction,
+    },
+    {
+      "%": TruthyError.ModBoolean,
+      "-": TruthyError.Subtraction,
+    },
+  ],
+  [
+    undefined,
+    {
+      "%": TruthyError.ModUndefined,
+      "&&": TruthyError.LogicalAnd,
+      "-": TruthyError.Subtraction,
+      "**": TruthyError.Expo,
+      "/": TruthyError.Division,
+    },
+    {
+      "%": TruthyError.ModUndefined,
+      "&&": TruthyError.LogicalAnd,
+      "-": TruthyError.Subtraction,
+      "/": TruthyError.Division,
+    },
+  ],
   [
     Symbol("of love"),
     {
@@ -179,9 +243,9 @@ const junk: ItOption[] = [
 
 const itOptions: ItOption[] = [
   //
-  ...numbers,
-  ...strings,
-  ...numericStrings,
+  // ...numbers,
+  // ...strings,
+  // ...numericStrings,
   ...junk,
 ]
 
@@ -274,6 +338,10 @@ const handleExpected = (
   }).toThrow(expectedError)
 }
 
+const handleIdentity = (fn: Function, basis: unknown) => {
+  expect(fn("===", basis)).toBe(basis)
+}
+
 // eslint-disable-next-line max-statements
 const handleStandard = (
   label: SideLabel,
@@ -289,7 +357,12 @@ const handleStandard = (
   if (typeof basis === "symbol") {
     // Even identical symbols aren't the same.  This is a special case where we
     // can't use eval to test.
+    // TODO: Is there any comparison we can do?
+    // Symbol(1) && true === true
     return
+  }
+  if (operator === "===") {
+    return handleIdentity(fn, basis)
   }
   expect(eval(evalString)).toBeTruthy()
 }

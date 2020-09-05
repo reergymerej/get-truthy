@@ -65,10 +65,11 @@ const solveForString = (side: SideLabel, basis: string): string | number =>
       solveForLeftString(basis)
     : solveForRightString(basis)
 
+// eslint-disable-next-line complexity
 export const getDivision = (
   side: SideLabel,
   basis: unknown,
-): number | string => {
+): number | string | bigint => {
   const type = getType(basis)
   switch (type) {
     case "bigint":
@@ -79,5 +80,16 @@ export const getDivision = (
       return solveForString(side, basis as string)
     case "symbol":
       throw error(side, "/", basis, TruthyError.DivisionSymbol)
+    case "null":
+    case "object":
+    case "function":
+    case "undefined":
+      throw error(side, "/", basis, TruthyError.Division)
+    case "boolean": {
+      if (basis === true) {
+        return 1
+      }
+      throw error(side, "/", basis, TruthyError.Division)
+    }
   }
 }

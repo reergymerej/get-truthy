@@ -63,6 +63,7 @@ const getRightString = (basis: string) => {
 // eslint-disable-next-line complexity
 const getLeft = (basis: unknown) => {
   const type = getType(basis)
+  const side = SideLabel.left
   switch (type) {
     case "bigint":
       return getLeftBigInt(basis as bigint)
@@ -71,11 +72,17 @@ const getLeft = (basis: unknown) => {
     case "string":
       return getLeftString(basis as string)
     case "symbol":
-      throw error(SideLabel.left, "%", basis, TruthyError.ModSymbol)
+      throw error(side, "%", basis, TruthyError.ModSymbol)
     case "object":
-      throw error(SideLabel.left, "%", basis, TruthyError.ModObjectLeft)
+      throw error(side, "%", basis, TruthyError.ModObjectLeft)
     case "null":
-      throw error(SideLabel.left, "%", basis, TruthyError.ModLeftNull)
+      throw error(side, "%", basis, TruthyError.ModLeftNull)
+    case "function":
+      throw error(side, "%", basis, TruthyError.ModFunction)
+    case "boolean":
+      throw error(side, "%", basis, TruthyError.ModBoolean)
+    case "undefined":
+      throw error(side, "%", basis, TruthyError.ModUndefined)
     default:
       throw new Error(`unhandled case "${type}"`)
   }
@@ -83,6 +90,7 @@ const getLeft = (basis: unknown) => {
 // eslint-disable-next-line complexity
 const getRight = (basis: unknown) => {
   const type = getType(basis)
+  const side = SideLabel.right
   switch (type) {
     case "bigint":
       return getRightBigInt(basis as bigint)
@@ -91,11 +99,17 @@ const getRight = (basis: unknown) => {
     case "string":
       return getRightString(basis as string)
     case "symbol":
-      throw error(SideLabel.right, "%", basis, TruthyError.ModSymbol)
+      throw error(side, "%", basis, TruthyError.ModSymbol)
     case "null":
-      throw error(SideLabel.right, "%", basis, TruthyError.ModRightNull)
+      throw error(side, "%", basis, TruthyError.ModRightNull)
     case "object":
-      throw error(SideLabel.left, "%", basis, TruthyError.ModObjectRight)
+      throw error(side, "%", basis, TruthyError.ModObjectRight)
+    case "function":
+      throw error(side, "%", basis, TruthyError.ModFunction)
+    case "boolean":
+      throw error(side, "%", basis, TruthyError.ModBoolean)
+    case "undefined":
+      throw error(side, "%", basis, TruthyError.ModUndefined)
     default:
       throw new Error(`unhandled case "${type}"`)
   }

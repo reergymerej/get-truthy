@@ -24,6 +24,9 @@ const solveForStringOnLeft = (
 // eslint-disable-next-line complexity
 const solveForLeft = (basis: unknown): number | null | bigint => {
   const type = getType(basis)
+  const leftError = (truthyError: TruthyError) => {
+    throw error(SideLabel.left, "**", basis, truthyError)
+  }
   switch (type) {
     case "number":
       return 1
@@ -32,9 +35,17 @@ const solveForLeft = (basis: unknown): number | null | bigint => {
     case "bigint":
       return BigInt(1)
     case "symbol":
-      throw error(SideLabel.left, "**", basis, TruthyError.ExpoSymbol)
+      return leftError(TruthyError.ExpoSymbol)
     case "object":
-      throw error(SideLabel.left, "**", basis, TruthyError.ExpoObjectLeft)
+      return leftError(TruthyError.ExpoObjectLeft)
+    case "function":
+    case "null":
+    case "undefined":
+      return leftError(TruthyError.Expo)
+    case "boolean":
+      return basis === false ? leftError(TruthyError.Expo) : 1
+    default:
+      throw `hot salad: ${type}`
   }
 }
 

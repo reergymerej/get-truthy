@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { SideLabel, Operator, TruthyError } from "./types"
 import { getAddition } from "./getAddition"
 import { getDivision } from "./getDivision"
@@ -10,6 +11,8 @@ import { getNotEqual } from "./getNotEqual"
 import { getSubtraction } from "./getSubtraction"
 import { getType } from "./util"
 import { error } from "./visualize"
+import { getEquality } from "./getEquality"
+import { getIdentity } from "./getIdentity"
 
 type ResultLeft =
   | ReturnType<typeof getAddition>
@@ -24,7 +27,7 @@ type ResultLeft =
   | ReturnType<typeof getSubtraction>
   | unknown
 
-// eslint-disable-next-line complexity
+// eslint-disable-next-line max-statements
 export const left = (operator: Operator, basis: unknown): ResultLeft => {
   switch (operator) {
     case "+":
@@ -48,15 +51,9 @@ export const left = (operator: Operator, basis: unknown): ResultLeft => {
     case "*":
       return getMultiplication(SideLabel.left, basis)
     case "==": {
-      if (getType(basis) === "object") {
-        return "[object Object]"
-      }
-      return basis
+      return getEquality(SideLabel.left, basis)
     }
     case "===":
-      if (getType(basis) === "object") {
-        throw error(SideLabel.left, "===", basis, TruthyError.IdentityObject)
-      }
       return basis
     case "!=":
     case "!==":
@@ -93,9 +90,6 @@ export const right = (operator: Operator, basis: unknown): ResultRight => {
     case "%":
       return getModulo(SideLabel.right, basis)
     case "===":
-      if (getType(basis) === "object") {
-        throw error(SideLabel.right, "===", basis, TruthyError.IdentityObject)
-      }
       return basis
     default:
       return left(operator, basis)

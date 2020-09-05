@@ -17,7 +17,7 @@ const solveForString = (
 export const getSubtraction = (
   side: SideLabel,
   basis: unknown,
-): number | string => {
+): number | string | bigint => {
   const type = getType(basis)
   switch (type) {
     case "number":
@@ -25,8 +25,15 @@ export const getSubtraction = (
     case "string":
       return solveForString(side, basis as string)
     case "bigint":
+      return BigInt(1)
+    case "null":
       return 1
     case "symbol":
       throw error(side, "-", basis, TruthyError.SubtractionSymbol)
+    case "function":
+    case "object":
+    case "boolean":
+    case "undefined":
+      throw error(side, "-", basis, TruthyError.Subtraction)
   }
 }
