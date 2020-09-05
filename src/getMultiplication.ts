@@ -45,5 +45,16 @@ export const getMultiplication = (
       return solveForString(side, basis as string)
     case "symbol":
       throw error(side, "*", basis, TruthyError.MultiplySymbol)
+    case "null":
+    case "object":
+    case "function":
+    case "undefined":
+      throw error(side, "*", basis, TruthyError.Multiplication)
+    case "boolean": {
+      if (basis === true) {
+        return 1
+      }
+      throw error(side, "*", basis, TruthyError.Multiplication)
+    }
   }
 }

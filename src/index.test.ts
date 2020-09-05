@@ -16,7 +16,7 @@ const operators: Operator[] = [
   "===",
   // ">",
   // ">=",
-  // "*",
+  "*",
   "/",
   "%",
   "**",
@@ -132,11 +132,13 @@ const junk: ItOption[] = [
       "&&": TruthyError.LogicalAnd,
       "**": TruthyError.Expo,
       "/": TruthyError.Division,
+      "*": TruthyError.Multiplication,
     },
     {
       "%": TruthyError.ModRightNull,
       "&&": TruthyError.LogicalAnd,
       "/": TruthyError.Division,
+      "*": TruthyError.Multiplication,
     },
   ],
   [
@@ -146,11 +148,13 @@ const junk: ItOption[] = [
       "%": TruthyError.ModObjectLeft,
       "-": TruthyError.Subtraction,
       "/": TruthyError.Division,
+      "*": TruthyError.Multiplication,
     },
     {
       "%": TruthyError.ModObjectRight,
       "-": TruthyError.Subtraction,
       "/": TruthyError.Division,
+      "*": TruthyError.Multiplication,
     },
   ],
   [
@@ -161,12 +165,14 @@ const junk: ItOption[] = [
       "-": TruthyError.Subtraction,
       "**": TruthyError.Expo,
       "/": TruthyError.Division,
+      "*": TruthyError.Multiplication,
     },
     {
       "==": TruthyError.EqualityFunction,
       "%": TruthyError.ModFunction,
       "-": TruthyError.Subtraction,
       "/": TruthyError.Division,
+      "*": TruthyError.Multiplication,
     },
   ],
   [
@@ -177,12 +183,14 @@ const junk: ItOption[] = [
       "-": TruthyError.Subtraction,
       "**": TruthyError.Expo,
       "/": TruthyError.Division,
+      "*": TruthyError.Multiplication,
     },
     {
       "%": TruthyError.ModBoolean,
       "&&": TruthyError.LogicalAnd,
       "-": TruthyError.Subtraction,
       "/": TruthyError.Division,
+      "*": TruthyError.Multiplication,
     },
   ],
   [
@@ -204,12 +212,14 @@ const junk: ItOption[] = [
       "-": TruthyError.Subtraction,
       "**": TruthyError.Expo,
       "/": TruthyError.Division,
+      "*": TruthyError.Multiplication,
     },
     {
       "%": TruthyError.ModUndefined,
       "&&": TruthyError.LogicalAnd,
       "-": TruthyError.Subtraction,
       "/": TruthyError.Division,
+      "*": TruthyError.Multiplication,
     },
   ],
   [
